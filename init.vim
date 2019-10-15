@@ -79,7 +79,7 @@ autocmd BufEnter * call ncm2#enable_for_buffer()
 
 """""""""""""""""""""""""""""""""""""""""
 """"" Python config""""""""""""""""""""""
-let g:python3_host_prog = '/usr/bin/python'
+let g:syntastic_python_python_exec = 'python3'
 let g:nvim_ipy_perform_mappings = 0
 map <silent> <C-Space> <Plug>(IPy-Run)
 ":source /home/tamas/.vim/plugged/vim-ipython/ftplugin/python/ipy.vim
@@ -100,3 +100,15 @@ let g:tern_request_timeout = 1
 let g:tern_request_timeout = 6000
 let g:tern#command = ["tern"]
 let g:tern#arguments = [" — persistent"]
+
+"""""""""""""""""""""""""""""""""""""""""
+""""" Nvim-R custom key bindings"""""""""
+nmap <C-Space> <Plug>RSendLine
+imap <C-Space> <Plug>RSendLine
+vmap <C-Space> <Plug>RSendLine
+
+nmap <C-x> <Plug>RSendFile
+imap <C-x> <Plug>RSendFile
+vmap <C-x> <Plug>RSendFile
+
+

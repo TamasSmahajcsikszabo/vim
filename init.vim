@@ -18,6 +18,8 @@ Plug 'tpope/vim-commentary'
 """""""""""""""""""""""""""""""""""""""""
 """""""" Visuals"""""""""""""""""""""""""
 Plug 'morhetz/gruvbox'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 """""""""""""""""""""""""""""""""""""""""
 """"""" Nerdtree plugin and config"""""""
@@ -71,6 +73,7 @@ let g:deoplete#enable_at_startup = 1
 """"" Visual config""""""""""""""""""""""
 colorscheme gruvbox
 set background=dark
+let g:airline_theme='bubblegum'
 
 """""""""""""""""""""""""""""""""""""""""
 """" Autocompletion ncm2"""""""""""""""""
@@ -111,4 +114,7 @@ nmap <C-x> <Plug>RSendFile
 imap <C-x> <Plug>RSendFile
 vmap <C-x> <Plug>RSendFile
 
+autocmd FileType r inoremap <C-S-m>:normal! a %>%<CR> a 
+autocmd FileType rnoweb inoremap <C-S-m>:normal! a %>%<CR> a 
+autocmd FileType rmd inoremap <C-S-m>:normal! a %>%<CR> a 
 

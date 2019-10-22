@@ -18,6 +18,7 @@ Plug 'myusuf3/numbers.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'majutsushi/tagbar'
 Plug 'jalvesaq/vimcmdline'
+Plug 'tpope/vim-fugitive'
 """""""""""""""""""""""""""""""""""""""""
 """""""" Visuals"""""""""""""""""""""""""
 Plug 'morhetz/gruvbox'
@@ -31,7 +32,7 @@ Plug 'scrooloose/nerdtree'
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 map <C-t> :NERDTreeToggle<CR>
-
+map <C-w>a :NERDTreeFocus<cr>R<c-w><c-p>(c)
 
 """"""""""""""""""""""""""""""""""""""""""
 """"""""" nvim-R plugin and config""""""""
@@ -49,7 +50,7 @@ Plug 'lervag/vimtex'
 """""""""""""""""""""""""""""""""""""""""
 """"""""" Python integration"""""""""""""
 Plug 'neovim/pynvim'
-Plug 'ivanov/vim-ipython'
+"Plug 'ivanov/vim-ipython'
 Plug 'bfredl/nvim-ipy'
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-jedi'
@@ -61,13 +62,13 @@ Plug 'ncm2/ncm2-path'
 """""""""""""""""""""""""""""""""""""""
 """""" Javascript autocompltion""""""""
 
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
-Plug 'carlitux/deoplete-ternjs'
-Plug 'roxma/vim-hug-neovim-rpc'
-Plug 'sheerun/vim-polyglot'
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
+"Plug 'carlitux/deoplete-ternjs'
+"Plug 'roxma/vim-hug-neovim-rpc'
 Plug 'dense-analysis/ale'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'sheerun/vim-polyglot' 
 """"""""""""""""""""""""""""""""""""""
 """ Fuzzy search""""""""""""""""""""""
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -103,10 +104,18 @@ let g:tagbar_type_r = {
         \ 'v:FunctionVariables',
     \ ]
 \ }
+set statusline=%f
+set statusline+=%{coc#status()}
+set statusline+=%{FugitiveStatusline()}
 
-"luafile $HOME/.config/nvim/config.lua
+" custom log function
+function Sel() range
+	echo system('echo '.shellescape(join(getline(a:firstline, a:lastline), "\n")).'| xclip -in')
+endfunction
 
-"""""""""""""""""""""""""""""""""""""""""
+
+
+""""""""""""""""""""""""""""""""""""""""
 """"" Visual config""""""""""""""""""""""
 colorscheme gruvbox
 set background=dark
@@ -123,11 +132,11 @@ let g:syntastic_python_python_exec = 'python3'
 let g:nvim_ipy_perform_mappings = 0
 let g:python3_host_prog = '/usr/bin/python3'
 map <silent> <C-Space> <Plug>(IPy-Run)
-:source /home/tamas/.vim/plugged/vim-ipython/ftplugin/python/ipy.vim
+
+":source /home/tamas/.vim/plugged/vim-ipython/ftplugin/python/ipy.vim
 			
 """"""""""""""""""""""""""""""""""""""""
 """""" Javascript autcompletion config""
-
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#enable_ignore_case = 1
 let g:deoplete#enable_smart_case = 1
@@ -136,7 +145,6 @@ let g:deoplete#enable_refresh_always = 1
 let g:deoplete#max_abbr_width = 0
 let g:deoplete#max_menu_width = 0
 let g:deoplete#omni#input_patterns = get(g:,'deoplete#omni#input_patterns',{})
-
 let g:tern_request_timeout = 1
 let g:tern_request_timeout = 6000
 let g:tern#command = ["tern"]

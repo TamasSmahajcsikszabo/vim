@@ -50,11 +50,11 @@ Plug 'lervag/vimtex'
 """""""""""""""""""""""""""""""""""""""""
 """"""""" Python integration"""""""""""""
 Plug 'neovim/pynvim'
-Plug 'ivanov/vim-ipython'
+"Plug 'ivanov/vim-ipython'
 Plug 'bfredl/nvim-ipy'
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-jedi'
-Plug 'ncm2/ncm2-path'
+"Plug 'ncm2/ncm2-bufword'
+"Plug 'ncm2/ncm2-jedi'
+"Plug 'ncm2/ncm2-path'
 "Plug 'jupyter-vim/jupyter-vim'
 
 
@@ -107,9 +107,9 @@ let g:tagbar_type_r = {
     \ ]
 \ }
 
-set statusline=%f
-set statusline+=%{coc#status()}
-set statusline+=%{FugitiveStatusline()}
+"set statusline=%f
+"set statusline+=%{coc#status()}
+"set statusline+=%{FugitiveStatusline()}
 
 """"""""""""""""""""""""""""""""""""""""
 """"" Visual config""""""""""""""""""""""
@@ -121,13 +121,12 @@ let g:airline_theme='bubblegum'
 """" Autocompletion ncm2"""""""""""""""""
 autocmd BufEnter * call ncm2#enable_for_buffer()
  set completeopt=noinsert,menuone,noselect
-
 """""""""""""""""""""""""""""""""""""""""
 """"" Python config""""""""""""""""""""""
 let g:syntastic_python_python_exec = 'python3'
-let g:nvim_ipy_perform_mappings = 0
+let g:nvim_ipy_perform_mappings = 1
 let g:python3_host_prog = '/usr/bin/python3'
-map <silent> <C-Space> <Plug>(IPy-Run)
+map <silent> <c-s> <Plug>(IPy-Run)
 			
 """"""""""""""""""""""""""""""""""""""""
 """""" Javascript autcompletion config""

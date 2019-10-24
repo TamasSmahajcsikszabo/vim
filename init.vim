@@ -50,22 +50,22 @@ Plug 'lervag/vimtex'
 """""""""""""""""""""""""""""""""""""""""
 """"""""" Python integration"""""""""""""
 Plug 'neovim/pynvim'
-"Plug 'ivanov/vim-ipython'
+Plug 'ivanov/vim-ipython'
 Plug 'bfredl/nvim-ipy'
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-jedi'
 Plug 'ncm2/ncm2-path'
-"Plug 'wmvanvliet/jupyter-vim'
-"Plug 'Vigemus/iron.nvim'
+"Plug 'jupyter-vim/jupyter-vim'
+
 
 
 """""""""""""""""""""""""""""""""""""""
 """""" Javascript autocompltion""""""""
 
-"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-"Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
-"Plug 'carlitux/deoplete-ternjs'
-"Plug 'roxma/vim-hug-neovim-rpc'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
+Plug 'carlitux/deoplete-ternjs'
+Plug 'roxma/vim-hug-neovim-rpc'
 Plug 'dense-analysis/ale'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot' 
@@ -92,6 +92,8 @@ call plug#end()
 syntax on
 let g:ale_completion_enabled = 1
 let g:ale_sign_column_always = 1
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '--'
 set runtimepath+=~/.config/nvim/bundle/deoplete.nvim/
 let g:deoplete#enable_at_startup = 1
 let g:coc_node_path = '/home/tamas/.nvm/versions/node/v12.12.0/bin/node'
@@ -104,16 +106,10 @@ let g:tagbar_type_r = {
         \ 'v:FunctionVariables',
     \ ]
 \ }
+
 set statusline=%f
 set statusline+=%{coc#status()}
 set statusline+=%{FugitiveStatusline()}
-
-" custom log function
-function Sel() range
-	echo system('echo '.shellescape(join(getline(a:firstline, a:lastline), "\n")).'| xclip -in')
-endfunction
-
-
 
 """"""""""""""""""""""""""""""""""""""""
 """"" Visual config""""""""""""""""""""""
@@ -132,8 +128,6 @@ let g:syntastic_python_python_exec = 'python3'
 let g:nvim_ipy_perform_mappings = 0
 let g:python3_host_prog = '/usr/bin/python3'
 map <silent> <C-Space> <Plug>(IPy-Run)
-
-":source /home/tamas/.vim/plugged/vim-ipython/ftplugin/python/ipy.vim
 			
 """"""""""""""""""""""""""""""""""""""""
 """""" Javascript autcompletion config""
@@ -149,7 +143,8 @@ let g:tern_request_timeout = 1
 let g:tern_request_timeout = 6000
 let g:tern#command = ["tern"]
 let g:tern#arguments = [" — persistent"]
-
+call deoplete#custom#option('sources', {'_': ['ale']})
+let g:ale_fix_on_save = 1
 
 """""""""""""""""""""""""""""""""""""""""
 """"" Nvim-R custom key bindings"""""""""

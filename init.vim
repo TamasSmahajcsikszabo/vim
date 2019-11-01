@@ -31,7 +31,7 @@ Plug 'scrooloose/nerdtree'
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 map <C-t> :NERDTreeToggle<CR>
-map <C-w>a :NERDTreeFocus<cr>R<c-w><c-p>(c)
+map <C-r> :NERDTreeFocus<cr>R<c-w><c-p>(c)
 
 """"""""""""""""""""""""""""""""""""""""""
 """"""""" nvim-R plugin and config""""""""
@@ -94,7 +94,7 @@ let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
 set runtimepath+=~/.config/nvim/bundle/deoplete.nvim/
 let g:deoplete#enable_at_startup = 1
-let g:coc_node_path = '/home/tamas/.nvm/versions/node/v12.12.0/bin/node'
+let g:coc_node_path = '/home/tamas/.nvm/versions/node/v12.13.0/bin/node'
 nmap <C-b> :TagbarToggle<CR>
 let g:tagbar_type_r = {
     \ 'ctagstype' : 'r',
@@ -153,10 +153,11 @@ nmap <C-CR> <Plug>RSendSelection
 imap <C-CR> <Plug>RSendSelection
 vmap <C-CR> <Plug>RSendSelection
 
-autocmd FileType r inoremap <C-S-m>:normal! a %>%<CR> a 
-autocmd FileType rnoweb inoremap <C-S-m>:normal! a %>%<CR> a 
-autocmd FileType rmd inoremap <C-S-m>:normal! a %>%<CR> a 
-
+" autocmd FileType r inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
+" autocmd FileType rnoweb inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
+" autocmd FileType rmd inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
+autocmd FileType r imap <C-n> <Esc>:normal! a %>%<CR><Esc>o
+autocmd FileType r imap <A-,> <Esc>:normal! a <-  <cr><Esc>i
 "**************************************"
 """"""""" Fuzzy search options""""""""""
 "cltrp options

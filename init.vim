@@ -31,7 +31,7 @@ Plug 'scrooloose/nerdtree'
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 map <C-t> :NERDTreeToggle<CR>
-map <C-q> :NERDTreeFocus<cr>R<c-w><c-p>(c)
+map <C-q> :NERDTreeFocus<cr>R<c-w><c-p>(c)<Esc>
 
 """"""""""""""""""""""""""""""""""""""""""
 """"""""" nvim-R plugin and config""""""""
@@ -53,10 +53,10 @@ Plug 'vim-pandoc/vim-rmarkdown'
 Plug 'neovim/pynvim'
 "Plug 'ivanov/vim-ipython'
 Plug 'bfredl/nvim-ipy'
-"Plug 'ncm2/ncm2-bufword'
-"Plug 'ncm2/ncm2-jedi'
-"Plug 'ncm2/ncm2-path'
-"Plug 'jupyter-vim/jupyter-vim'
+Plug 'ncm2/ncm2-bufword'
+Plug 'ncm2/ncm2-jedi'
+Plug 'ncm2/ncm2-path'
+Plug 'jupyter-vim/jupyter-vim'
 
 
 
@@ -141,7 +141,7 @@ let g:syntastic_python_python_exec = 'python3'
 let g:nvim_ipy_perform_mappings = 1
 let g:python3_host_prog = '/usr/bin/python3'
 map <silent> <c-s> <Plug>(IPy-Run)
-			
+" map <c-i> :IPython<cr>			
 """"""""""""""""""""""""""""""""""""""""
 """""" Javascript autcompletion config""
 let g:deoplete#enable_at_startup = 1

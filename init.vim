@@ -31,7 +31,7 @@ Plug 'scrooloose/nerdtree'
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 map <C-t> :NERDTreeToggle<CR>
-map <C-r> :NERDTreeFocus<cr>R<c-w><c-p>(c)
+map <C-q> :NERDTreeFocus<cr>R<c-w><c-p>(c)
 
 """"""""""""""""""""""""""""""""""""""""""
 """"""""" nvim-R plugin and config""""""""
@@ -45,7 +45,9 @@ Plug 'roxma/vim-hug-neovim-rpc'
 Plug 'sirver/UltiSnips'
 Plug 'ncm2/ncm2-ultisnips'
 Plug 'lervag/vimtex'
-
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'vim-pandoc/vim-rmarkdown' 
 """""""""""""""""""""""""""""""""""""""""
 """"""""" Python integration"""""""""""""
 Plug 'neovim/pynvim'
@@ -110,6 +112,20 @@ let g:tagbar_type_r = {
 "set statusline+=%{FugitiveStatusline()}
 
 """"""""""""""""""""""""""""""""""""""""
+""" Tab indents"""""""""""""""""""""""""
+set tabstop=4       " The width of a TAB is set to 4.
+                    " Still it is a \t. It is just that
+                    " Vim will interpret it to be having
+                    " a width of 4.
+
+set shiftwidth=4    " Indents will have a width of 4
+
+set softtabstop=4   " Sets the number of columns for a TAB
+
+set expandtab       " Expand TABs to spaces
+
+
+""""""""""""""""""""""""""""""""""""""""
 """"" Visual config""""""""""""""""""""""
 colorscheme gruvbox
 set background=dark
@@ -158,6 +174,9 @@ vmap <C-CR> <Plug>RSendSelection
 " autocmd FileType rmd inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
 autocmd FileType r imap <C-n> <Esc>:normal! a %>%<CR><Esc>o
 autocmd FileType r imap <A-,> <Esc>:normal! a <-  <cr><Esc>i
+nmap <A-m> :RMarkdown<cr> 
+imap <A-m> :RMarkdown<cr> 
+vmap <A-m> :RMarkdown<cr> 
 "**************************************"
 """"""""" Fuzzy search options""""""""""
 "cltrp options

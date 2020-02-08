@@ -18,6 +18,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'majutsushi/tagbar'
 Plug 'jalvesaq/vimcmdline'
 Plug 'tpope/vim-fugitive'
+Plug 'Townk/vim-autoclose'
 """""""""""""""""""""""""""""""""""""""""
 """""""" Visuals"""""""""""""""""""""""""
 Plug 'morhetz/gruvbox'
@@ -96,7 +97,7 @@ let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
 set runtimepath+=~/.config/nvim/bundle/deoplete.nvim/
 let g:deoplete#enable_at_startup = 1
-let g:coc_node_path = '/home/tamas/.nvm/versions/node/v12.13.0/bin/node'
+let g:coc_node_path = '/home/tamas/.nvm/versions/node/v12.14.1/bin/node'
 nmap <C-b> :TagbarToggle<CR>
 let g:tagbar_type_r = {
     \ 'ctagstype' : 'r',
@@ -141,7 +142,7 @@ let g:syntastic_python_python_exec = 'python3'
 let g:nvim_ipy_perform_mappings = 1
 let g:python3_host_prog = '/usr/bin/python3'
 map <silent> <c-s> <Plug>(IPy-Run)
-" map <c-i> :IPython<cr>			
+map <A-x> :IPython<cr>			
 """"""""""""""""""""""""""""""""""""""""
 """""" Javascript autcompletion config""
 let g:deoplete#enable_at_startup = 1
@@ -173,7 +174,7 @@ vmap <C-CR> <Plug>RSendSelection
 " autocmd FileType rnoweb inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
 " autocmd FileType rmd inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
 autocmd FileType r imap <C-n> <Esc>:normal! a %>%<CR><Esc>o
-autocmd FileType r imap <A-,> <Esc>:normal! a <-  <cr><Esc>i
+autocmd FileType r imap <A--> <Esc>:normal! a <-  <cr><Esc>i
 nmap <A-m> :RMarkdown<cr> 
 imap <A-m> :RMarkdown<cr> 
 vmap <A-m> :RMarkdown<cr> 

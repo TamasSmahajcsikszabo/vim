@@ -19,6 +19,10 @@ Plug 'majutsushi/tagbar'
 Plug 'jalvesaq/vimcmdline'
 Plug 'tpope/vim-fugitive'
 Plug 'Townk/vim-autoclose'
+Plug 'xolox/vim-notes'
+Plug 'xolox/vim-misc'
+Plug 'jiangmiao/auto-pairs'
+
 """""""""""""""""""""""""""""""""""""""""
 """""""" Visuals"""""""""""""""""""""""""
 Plug 'morhetz/gruvbox'
@@ -27,12 +31,17 @@ Plug 'vim-airline/vim-airline-themes'
 
 """""""""""""""""""""""""""""""""""""""""
 """"""" Nerdtree plugin and config"""""""
-
 Plug 'scrooloose/nerdtree'
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 map <C-t> :NERDTreeToggle<CR>
 map <C-q> :NERDTreeFocus<cr>R<c-w><c-p>(c)<Esc>
+
+
+
+""""""""""""""""""""""""""""""""""""""""""
+""""""""" vim-notes config""""""""""""""""
+map <C-]> :SearchNotes<CR>
 
 """"""""""""""""""""""""""""""""""""""""""
 """"""""" nvim-R plugin and config""""""""
@@ -49,6 +58,7 @@ Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-rmarkdown' 
+
 """""""""""""""""""""""""""""""""""""""""
 """"""""" Python integration"""""""""""""
 Plug 'neovim/pynvim'
@@ -63,7 +73,6 @@ Plug 'jupyter-vim/jupyter-vim'
 
 """""""""""""""""""""""""""""""""""""""
 """""" Javascript autocompltion""""""""
-
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
 Plug 'carlitux/deoplete-ternjs'
@@ -108,6 +117,8 @@ let g:tagbar_type_r = {
     \ ]
 \ }
 
+filetype plugin on
+:let g:notes_directories = ['~/repos/notes']
 "set statusline=%f
 "set statusline+=%{coc#status()}
 "set statusline+=%{FugitiveStatusline()}

@@ -22,12 +22,24 @@ Plug 'Townk/vim-autoclose'
 Plug 'xolox/vim-notes'
 Plug 'xolox/vim-misc'
 Plug 'jiangmiao/auto-pairs'
+Plug 'SirVer/ultisnips'
 
 """""""""""""""""""""""""""""""""""""""""
 """""""" Visuals"""""""""""""""""""""""""
 Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'zacanger/angr.vim'
+Plug 'tyrannicaltoucan/vim-deep-space'
+Plug 'nanotech/jellybeans.vim'
+Plug 'christophermca/meta5'
+Plug 'fcpg/vim-orbital'
+Plug 'sts10/vim-pink-moon'
+Plug 'jacoborus/tender.vim'
+Plug 'whatyouhide/vim-gotham'
+Plug 'baskerville/bubblegum'
+Plug 'rakr/vim-two-firewatch'
+Plug 'mhartington/oceanic-next'
 
 """""""""""""""""""""""""""""""""""""""""
 """"""" Nerdtree plugin and config"""""""
@@ -142,11 +154,20 @@ set expandtab       " Expand TABs to spaces
 colorscheme gruvbox
 set background=dark
 let g:airline_theme='bubblegum'
+set termguicolors
+syntax enable
 
 """""""""""""""""""""""""""""""""""""""""
 """" Autocompletion ncm2"""""""""""""""""
 autocmd BufEnter * call ncm2#enable_for_buffer()
- set completeopt=noinsert,menuone,noselect
+set completeopt=noinsert,menuone,noselect
+
+"""ultisnips
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+
 """""""""""""""""""""""""""""""""""""""""
 """"" Python config""""""""""""""""""""""
 let g:syntastic_python_python_exec = 'python3'

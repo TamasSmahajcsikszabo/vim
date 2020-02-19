@@ -23,6 +23,7 @@ Plug 'xolox/vim-notes'
 Plug 'xolox/vim-misc'
 Plug 'jiangmiao/auto-pairs'
 Plug 'SirVer/ultisnips'
+Plug 'rust-lang/rust.vim'
 
 """""""""""""""""""""""""""""""""""""""""
 """""""" Visuals"""""""""""""""""""""""""
@@ -47,7 +48,7 @@ Plug 'scrooloose/nerdtree'
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 map <C-t> :NERDTreeToggle<CR>
-map <C-q> :NERDTreeFocus<cr>R<c-w><c-p>(c)<Esc>
+map <C-r> :NERDTreeFocus<cr>R<c-w><c-p>(c)<Esc>
 
 
 
@@ -174,7 +175,10 @@ let g:syntastic_python_python_exec = 'python3'
 let g:nvim_ipy_perform_mappings = 1
 let g:python3_host_prog = '/usr/bin/python3'
 map <silent> <c-s> <Plug>(IPy-Run)
-map <A-x> :IPython<cr>			
+map <A-x> :IPython<cr>
+autocmd FileType python imap <A-c> <Esc>:normal! a ->  <CR><Esc>i
+
+
 """"""""""""""""""""""""""""""""""""""""
 """""" Javascript autcompletion config""
 let g:deoplete#enable_at_startup = 1
@@ -191,7 +195,20 @@ let g:tern#command = ["tern"]
 let g:tern#arguments = [" — persistent"]
 call deoplete#custom#option('sources', {'_': ['ale']})
 let g:ale_fix_on_save = 1
-
+set updatetime=300
+set nobackup
+set nowritebackup
+inoremap <silent><expr> <c-z> coc#refresh()
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+autocmd FileType javascript imap <A-c> <Esc>:normal! a =>  <CR><Esc>i
+autocmd FileType javascript nmap <A-c> <Esc>:normal! a =>  <CR><Esc>i
 """""""""""""""""""""""""""""""""""""""""
 """"" Nvim-R custom key bindings"""""""""
 nmap <C-Space> <Plug>RSendLine
@@ -206,7 +223,7 @@ vmap <C-CR> <Plug>RSendSelection
 " autocmd FileType rnoweb inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
 " autocmd FileType rmd inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
 autocmd FileType r imap <C-n> <Esc>:normal! a %>%<CR><Esc>o
-autocmd FileType r imap <A--> <Esc>:normal! a <-  <cr><Esc>i
+autocmd FileType r imap <A--> <Esc>:normal! a <-  <CR><Esc>i
 nmap <A-m> :RMarkdown<cr> 
 imap <A-m> :RMarkdown<cr> 
 vmap <A-m> :RMarkdown<cr> 

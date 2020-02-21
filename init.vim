@@ -24,6 +24,9 @@ Plug 'xolox/vim-misc'
 Plug 'jiangmiao/auto-pairs'
 Plug 'SirVer/ultisnips'
 Plug 'rust-lang/rust.vim'
+Plug 'neovimhaskell/haskell-vim'
+Plug 'jalvesaq/vimcmdline'
+Plug 'myhere/vim-nodejs-complete'
 
 """""""""""""""""""""""""""""""""""""""""
 """""""" Visuals"""""""""""""""""""""""""
@@ -180,6 +183,37 @@ autocmd FileType python imap <A-c> <Esc>:normal! a ->  <CR><Esc>i
 
 
 """"""""""""""""""""""""""""""""""""""""
+"""""" cmdline config """"""""""""""""""
+" vimcmdline mappings
+let cmdline_map_start          = '<CtrlP><S>'
+let cmdline_map_send           = '<CtrlP><Space>'
+let cmdline_map_send_and_stay  = '<LocalLeader><Space>'
+let cmdline_map_source_fun     = '<LocalLeader>f'
+let cmdline_map_send_paragraph = '<LocalLeader>p'
+let cmdline_map_send_block     = '<LocalLeader>b'
+let cmdline_map_quit           = '<LocalLeader>q'
+
+" vimcmdline options
+let cmdline_vsplit      = 1      " Split the window vertically
+let cmdline_esc_term    = 1      " Remap <Esc> to :stopinsert in Neovim's terminal
+let cmdline_in_buffer   = 1      " Start the interpreter in a Neovim's terminal
+let cmdline_term_height = 15     " Initial height of interpreter window or pane
+let cmdline_term_width  = 80     " Initial width of interpreter window or pane
+let cmdline_tmp_dir     = '/tmp' " Temporary directory to save files
+let cmdline_outhl       = 1      " Syntax highlight the output
+let cmdline_auto_scroll = 1      " Keep the cursor at the end of terminal (nvim)
+
+""""""""""""""""""""""""""""""""""""""""
+"""""" Haskell config """"""""""""""""""
+let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
+let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
+let g:haskell_enable_arrowsyntax = 1      " to enable highlighting of `proc`
+let g:haskell_enable_pattern_synonyms = 1 " to enable highlighting of `pattern`
+let g:haskell_enable_typeroles = 1        " to enable highlighting of type roles
+let g:haskell_enable_static_pointers = 1  " to enable highlighting of `static`
+let g:haskell_backpack = 1                " to enable highlighting of backpack keywords
+
+""""""""""""""""""""""""""""""""""""""""
 """""" Javascript autcompletion config""
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#enable_ignore_case = 1
@@ -209,6 +243,11 @@ function! s:show_documentation()
 endfunction
 autocmd FileType javascript imap <A-c> <Esc>:normal! a =>  <CR><Esc>i
 autocmd FileType javascript nmap <A-c> <Esc>:normal! a =>  <CR><Esc>i
+let g:nodejs_complete_config = {
+\  'js_compl_fn': 'jscomplete#CompleteJS',
+\  'max_node_compl_len': 15
+\}
+
 """""""""""""""""""""""""""""""""""""""""
 """"" Nvim-R custom key bindings"""""""""
 nmap <C-Space> <Plug>RSendLine

@@ -1,5 +1,4 @@
 call plug#begin('~/.vim/plugged')
-
 """""""""""""""""""""""""""""""""""""""""
 """""""" Vim-Plug Plugins""""""""""""""""
 
@@ -44,6 +43,7 @@ Plug 'whatyouhide/vim-gotham'
 Plug 'baskerville/bubblegum'
 Plug 'rakr/vim-two-firewatch'
 Plug 'mhartington/oceanic-next'
+Plug 'jnurmine/Zenburn'
 
 """""""""""""""""""""""""""""""""""""""""
 """"""" Nerdtree plugin and config"""""""
@@ -53,6 +53,10 @@ autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 map <C-t> :NERDTreeToggle<CR>
 map <C-r> :NERDTreeFocus<cr>R<c-w><c-p>(c)<Esc>
 
+
+""""""""""""""""""""""""""""""""""""""""
+""""""""" Database management""""""""""" 
+Plug 'tpope/vim-dadbod'
 
 
 """"""""""""""""""""""""""""""""""""""""""
@@ -89,13 +93,14 @@ Plug 'jupyter-vim/jupyter-vim'
 
 """""""""""""""""""""""""""""""""""""""
 """""" Javascript autocompltion""""""""
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
 Plug 'carlitux/deoplete-ternjs'
 Plug 'roxma/vim-hug-neovim-rpc'
 Plug 'dense-analysis/ale'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot' 
+Plug 'nikvdp/ejs-syntax'
 
 """"""""""""""""""""""""""""""""""""""
 """ Fuzzy search""""""""""""""""""""""
@@ -103,6 +108,8 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 
+""" Last plugins""""""
+Plug 'ryanoasis/vim-devicons'
 """""""""""""""""""""""""""""""""""""""
 """"" End of plugin section""""""""""""
 call plug#end()
@@ -120,8 +127,8 @@ let g:ale_completion_enabled = 1
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
-set runtimepath+=~/.config/nvim/bundle/deoplete.nvim/
-let g:deoplete#enable_at_startup = 1
+" set runtimepath+=~/.config/nvim/bundle/deoplete.nvim/
+" let g:deoplete#enable_at_startup = 1
 let g:coc_node_path = '/home/tamas/.nvm/versions/node/v12.14.1/bin/node'
 nmap <C-b> :TagbarToggle<CR>
 let g:tagbar_type_r = {
@@ -135,11 +142,19 @@ let g:tagbar_type_r = {
 
 filetype plugin on
 :let g:notes_directories = ['~/repos/notes']
-"set statusline=%f
-"set statusline+=%{coc#status()}
-"set statusline+=%{FugitiveStatusline()}
+" set statusline=%f
+" set statusline+=%{coc#status()}
+" set statusline+=%{FugitiveStatusline()}
+tnoremap <Esc> <C-\><C-n>
 
-""""""""""""""""""""""""""""""""""""""""
+" Tab actions
+map <Tab> :tabn<CR>
+map <A-e> :tabedit<CR>
+map <A-o> :tabonly<CR>
+map <A-z> :tabclose<CR>
+
+
+"""""""""""""""""""""""""""""""""""""
 """ Tab indents"""""""""""""""""""""""""
 set tabstop=4       " The width of a TAB is set to 4.
                     " Still it is a \t. It is just that
@@ -157,10 +172,20 @@ set expandtab       " Expand TABs to spaces
 """"" Visual config""""""""""""""""""""""
 colorscheme gruvbox
 set background=dark
-let g:airline_theme='bubblegum'
-set termguicolors
-syntax enable
+let g:airline_theme='gruvbox'
+set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline_right_sep = ''
+let g:airline_left_sep = '' 
+let g:airline_powerline_fonts=1
+let g:airline_symbols_ascii=1
+let g:airline_section_y = ""
+let g:airline_section_error =""
 
+" set termguicolors
+syntax enable
 """""""""""""""""""""""""""""""""""""""""
 """" Autocompletion ncm2"""""""""""""""""
 autocmd BufEnter * call ncm2#enable_for_buffer()
@@ -176,7 +201,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 """"" Python config""""""""""""""""""""""
 let g:syntastic_python_python_exec = 'python3'
 let g:nvim_ipy_perform_mappings = 1
-let g:python3_host_prog = '/usr/bin/python3'
+let g:python3_host_prog = '/usr/local/bin/python3.8'
 map <silent> <c-s> <Plug>(IPy-Run)
 map <A-x> :IPython<cr>
 autocmd FileType python imap <A-c> <Esc>:normal! a ->  <CR><Esc>i
@@ -185,8 +210,8 @@ autocmd FileType python imap <A-c> <Esc>:normal! a ->  <CR><Esc>i
 """"""""""""""""""""""""""""""""""""""""
 """""" cmdline config """"""""""""""""""
 " vimcmdline mappings
-let cmdline_map_start          = '<CtrlP><S>'
-let cmdline_map_send           = '<CtrlP><Space>'
+let cmdline_map_start          = '<S>'
+let cmdline_map_send           = '<Space>'
 let cmdline_map_send_and_stay  = '<LocalLeader><Space>'
 let cmdline_map_source_fun     = '<LocalLeader>f'
 let cmdline_map_send_paragraph = '<LocalLeader>p'
@@ -215,19 +240,19 @@ let g:haskell_backpack = 1                " to enable highlighting of backpack k
 
 """"""""""""""""""""""""""""""""""""""""
 """""" Javascript autcompletion config""
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#enable_ignore_case = 1
-let g:deoplete#enable_smart_case = 1
-let g:deoplete#enable_camel_case = 1
-let g:deoplete#enable_refresh_always = 1
-let g:deoplete#max_abbr_width = 0
-let g:deoplete#max_menu_width = 0
-let g:deoplete#omni#input_patterns = get(g:,'deoplete#omni#input_patterns',{})
+" let g:deoplete#enable_at_startup = 1
+" let g:deoplete#enable_ignore_case = 1
+" let g:deoplete#enable_smart_case = 1
+" let g:deoplete#enable_camel_case = 1
+" let g:deoplete#enable_refresh_always = 1
+" let g:deoplete#max_abbr_width = 0
+" let g:deoplete#max_menu_width = 0
+" let g:deoplete#omni#input_patterns = get(g:,'deoplete#omni#input_patterns',{})
 let g:tern_request_timeout = 1
 let g:tern_request_timeout = 6000
 let g:tern#command = ["tern"]
 let g:tern#arguments = [" — persistent"]
-call deoplete#custom#option('sources', {'_': ['ale']})
+" call deoplete#custom#option('sources', {'_': ['ale']})
 let g:ale_fix_on_save = 1
 set updatetime=300
 set nobackup
@@ -241,8 +266,8 @@ function! s:show_documentation()
     call CocAction('doHover')
   endif
 endfunction
-autocmd FileType javascript imap <A-c> <Esc>:normal! a =>  <CR><Esc>i
-autocmd FileType javascript nmap <A-c> <Esc>:normal! a =>  <CR><Esc>i
+autocmd FileType javascript imap <A-c> <Esc>:normal! a => <CR><Esc>i
+autocmd FileType javascript nmap <A-c> <Esc>:normal! a => <CR><Esc>i
 let g:nodejs_complete_config = {
 \  'js_compl_fn': 'jscomplete#CompleteJS',
 \  'max_node_compl_len': 15
@@ -263,9 +288,18 @@ vmap <C-CR> <Plug>RSendSelection
 " autocmd FileType rmd inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
 autocmd FileType r imap <C-n> <Esc>:normal! a %>%<CR><Esc>o
 autocmd FileType r imap <A--> <Esc>:normal! a <-  <CR><Esc>i
+
+autocmd FileType rmd imap <C-n> <Esc>:normal! a %>%<CR><Esc>o
+autocmd FileType rmd imap <A--> <Esc>:normal! a <-  <CR><Esc>i
+
 nmap <A-m> :RMarkdown<cr> 
 imap <A-m> :RMarkdown<cr> 
 vmap <A-m> :RMarkdown<cr> 
+
+nmap <A-m-m> :RMarkdown! pdf latex_engine="xelatex", toc=TRUE<cr> 
+imap <A-m-m> :RMarkdown! pdf latex_engine="xelatex", toc=TRUE<cr> 
+vmap <A-m-m> :RMarkdown! pdf latex_engine="xelatex", toc=TRUE<cr> 
+
 "**************************************"
 """"""""" Fuzzy search options""""""""""
 "cltrp options

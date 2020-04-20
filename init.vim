@@ -148,7 +148,8 @@ filetype plugin on
 tnoremap <Esc> <C-\><C-n>
 
 " Tab actions
-map <Tab> :tabn<CR>
+map <A-Right> :tabn<CR>
+map <A-Left> :tabp<CR>
 map <A-e> :tabedit<CR>
 map <A-o> :tabonly<CR>
 map <A-z> :tabclose<CR>
@@ -181,6 +182,7 @@ let g:airline_right_sep = ''
 let g:airline_left_sep = '' 
 let g:airline_powerline_fonts=1
 let g:airline_symbols_ascii=1
+let g:airline_section_x = ""
 let g:airline_section_y = ""
 let g:airline_section_error =""
 
@@ -289,8 +291,8 @@ vmap <C-CR> <Plug>RSendSelection
 autocmd FileType r imap <C-n> <Esc>:normal! a %>%<CR><Esc>o
 autocmd FileType r imap <A--> <Esc>:normal! a <-  <CR><Esc>i
 
-autocmd FileType rmd imap <C-n> <Esc>:normal! a %>%<CR><Esc>o
-autocmd FileType rmd imap <A--> <Esc>:normal! a <-  <CR><Esc>i
+autocmd FileType Rmd imap <C-n> <Esc>:normal! a %>%<CR><Esc>o
+autocmd FileType Rmd imap <A--> <Esc>:normal! a <-  <CR><Esc>i
 
 nmap <A-m> :RMarkdown<cr> 
 imap <A-m> :RMarkdown<cr> 

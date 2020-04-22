@@ -148,8 +148,8 @@ filetype plugin on
 tnoremap <Esc> <C-\><C-n>
 
 " Tab actions
-map <A-Right> :tabn<CR>
-map <A-Left> :tabp<CR>
+map <C-Right> :tabn<CR>
+map <C-Left> :tabp<CR>
 map <A-e> :tabedit<CR>
 map <A-o> :tabonly<CR>
 map <A-z> :tabclose<CR>

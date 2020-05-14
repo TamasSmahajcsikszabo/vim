@@ -44,6 +44,7 @@ Plug 'baskerville/bubblegum'
 Plug 'rakr/vim-two-firewatch'
 Plug 'mhartington/oceanic-next'
 Plug 'jnurmine/Zenburn'
+Plug 'gilgigilgil/anderson.vim'
 
 """""""""""""""""""""""""""""""""""""""""
 """"""" Nerdtree plugin and config"""""""
@@ -88,6 +89,8 @@ Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-jedi'
 Plug 'ncm2/ncm2-path'
 Plug 'jupyter-vim/jupyter-vim'
+Plug 'python-mode/python-mode'
+Plug 'honza/vim-snippets'
 
 
 
@@ -185,7 +188,7 @@ let g:airline_symbols_ascii=1
 let g:airline_section_x = ""
 let g:airline_section_y = ""
 let g:airline_section_error =""
-
+" au ColorScheme * hi Normal ctermbg=none
 " set termguicolors
 syntax enable
 """""""""""""""""""""""""""""""""""""""""
@@ -203,7 +206,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 """"" Python config""""""""""""""""""""""
 let g:syntastic_python_python_exec = 'python3'
 let g:nvim_ipy_perform_mappings = 1
-let g:python3_host_prog = '/usr/local/bin/python3.8'
+let g:python3_host_prog = '/usr/bin/python3'
 map <silent> <c-s> <Plug>(IPy-Run)
 map <A-x> :IPython<cr>
 autocmd FileType python imap <A-c> <Esc>:normal! a ->  <CR><Esc>i
@@ -307,6 +310,7 @@ vmap <A-m-m> :RMarkdown! pdf latex_engine="xelatex", toc=TRUE<cr>
 "cltrp options
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
+" nnoremap <C-p> :Files /home/tamas/ <CR>
 
 "fzf options
 let g:fzf_action = {

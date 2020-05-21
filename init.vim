@@ -278,6 +278,7 @@ let g:nodejs_complete_config = {
 \  'max_node_compl_len': 15
 \}
 
+map <C-o> <Esc>:CocRestart<CR><Esc>
 """""""""""""""""""""""""""""""""""""""""
 """"" Nvim-R custom key bindings"""""""""
 nmap <C-Space> <Plug>RSendLine

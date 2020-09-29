@@ -26,6 +26,8 @@ Plug 'rust-lang/rust.vim'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'jalvesaq/vimcmdline'
 Plug 'myhere/vim-nodejs-complete'
+Plug 'chrisbra/csv.vim'
+Plug 'xavierd/clang_complete'
 
 """""""""""""""""""""""""""""""""""""""""
 """""""" Visuals"""""""""""""""""""""""""
@@ -46,7 +48,17 @@ Plug 'mhartington/oceanic-next'
 Plug 'jnurmine/Zenburn'
 Plug 'gilgigilgil/anderson.vim'
 
-"""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""
+""""""""Light config           """"""""
+
+map <A--> :set background=dark<cr>
+map <A-=> :set background=light<cr>
+
+
+
+
+
+"""""""""""""""""""""""""""""""""""""""
 """"""" Nerdtree plugin and config"""""""
 Plug 'scrooloose/nerdtree'
 autocmd StdinReadPre * let s:std_in=1
@@ -100,7 +112,7 @@ Plug 'honza/vim-snippets'
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
 Plug 'carlitux/deoplete-ternjs'
 Plug 'roxma/vim-hug-neovim-rpc'
-Plug 'dense-analysis/ale'
+" Plug 'dense-analysis/ale'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot' 
 Plug 'nikvdp/ejs-syntax'
@@ -132,7 +144,7 @@ let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
 " set runtimepath+=~/.config/nvim/bundle/deoplete.nvim/
 " let g:deoplete#enable_at_startup = 1
-let g:coc_node_path = '/home/tamas/.nvm/versions/node/v12.14.1/bin/node'
+let g:coc_node_path = '/home/tamas/.nvm/versions/node/v14.5.0/bin/node'
 nmap <C-b> :TagbarToggle<CR>
 let g:tagbar_type_r = {
     \ 'ctagstype' : 'r',
@@ -191,6 +203,9 @@ let g:airline_section_error =""
 " au ColorScheme * hi Normal ctermbg=none
 " set termguicolors
 syntax enable
+
+
+
 """""""""""""""""""""""""""""""""""""""""
 """" Autocompletion ncm2"""""""""""""""""
 autocmd BufEnter * call ncm2#enable_for_buffer()
@@ -210,6 +225,7 @@ let g:python3_host_prog = '/usr/bin/python3'
 map <silent> <c-s> <Plug>(IPy-Run)
 map <A-x> :IPython<cr>
 autocmd FileType python imap <A-c> <Esc>:normal! a ->  <CR><Esc>i
+let g:pymode_lint_config = '$HOME/pylint.rc'
 
 
 """"""""""""""""""""""""""""""""""""""""
@@ -279,15 +295,17 @@ let g:nodejs_complete_config = {
 \}
 
 map <C-o> <Esc>:CocRestart<CR><Esc>
+
+
 """""""""""""""""""""""""""""""""""""""""
 """"" Nvim-R custom key bindings"""""""""
 nmap <C-Space> <Plug>RSendLine
 imap <C-Space> <Plug>RSendLine
 vmap <C-Space> <Plug>RSendLine
 
-nmap <C-CR> <Plug>RSendSelection
-imap <C-CR> <Plug>RSendSelection
-vmap <C-CR> <Plug>RSendSelection
+nmap <C-z> <Plug>RSendSelection
+imap <C-z> <Plug>RSendSelection
+vmap <C-z> <Plug>RSendSelection
 
 " autocmd FileType r inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
 " autocmd FileType rnoweb inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
@@ -298,13 +316,34 @@ autocmd FileType r imap <A--> <Esc>:normal! a <-  <CR><Esc>i
 autocmd FileType Rmd imap <C-n> <Esc>:normal! a %>%<CR><Esc>o
 autocmd FileType Rmd imap <A--> <Esc>:normal! a <-  <CR><Esc>i
 
-nmap <A-m> :RMarkdown<cr> 
-imap <A-m> :RMarkdown<cr> 
-vmap <A-m> :RMarkdown<cr> 
+" nmap <A-m> :RMarkdown<cr> 
+" imap <A-m> :RMarkdown<cr> 
+" vmap <A-m> :RMarkdown<cr> 
 
 nmap <A-m-m> :RMarkdown! pdf latex_engine="xelatex", toc=TRUE<cr> 
 imap <A-m-m> :RMarkdown! pdf latex_engine="xelatex", toc=TRUE<cr> 
 vmap <A-m-m> :RMarkdown! pdf latex_engine="xelatex", toc=TRUE<cr> 
+
+
+nmap <A-z> :RMarkdown! word - quiet=FALSE<cr> 
+imap <A-z> :RMarkdown! word - quiet=FALSE<cr> 
+vmap <A-z> :RMarkdown! word - quiet=FALSE<cr> 
+
+let g:tagbar_type_rmd = {
+          \   'ctagstype':'rmd'
+          \ , 'kinds':['h:header', 'c:chunk', 'f:function', 'v:variable']
+          \ , 'sro':'&&&'
+          \ , 'kind2scope':{'h':'header', 'c':'chunk'}
+          \ , 'sort':0
+          \ , 'ctagsbin':'/home/tamas/repos/setup/rmdtags.py'
+          \ , 'ctagsargs': ''
+          \ }
+
+
+
+""" clang config
+"let g:clang_library_path='/usr/lib64/libclang.so.10'
+
 
 "**************************************"
 """"""""" Fuzzy search options""""""""""
@@ -338,6 +377,8 @@ let g:fzf_colors =
 nmap <c-tab> <plug>(fzf-maps-n)
 xmap <c-tab> <plug>(fzf-maps-x)
 omap <c-tab> <plug>(fzf-maps-o)
+let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
+
 
 " Insert mode completion
 imap <c-x><c-k> <plug>(fzf-complete-word)
@@ -353,3 +394,6 @@ nnoremap <C-g> :GFiles<CR>
 
 nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>h :History<CR>
+
+
+

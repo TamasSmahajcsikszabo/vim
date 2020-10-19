@@ -10,7 +10,6 @@ Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 Plug 'fatih/vim-go', { 'tag': '*' }
 Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
-Plug '~/my-prototype-plugin'
 Plug 'tpope/vim-commentary'
 Plug 'myusuf3/numbers.vim'
 Plug 'airblade/vim-gitgutter'
@@ -47,12 +46,18 @@ Plug 'rakr/vim-two-firewatch'
 Plug 'mhartington/oceanic-next'
 Plug 'jnurmine/Zenburn'
 Plug 'gilgigilgil/anderson.vim'
+Plug 'https://gitlab.com/yorickpeterse/vim-paper.git'
+Plug 'altercation/vim-colors-solarized'
+Plug 'jaredgorski/fogbell.vim'
+Plug 'yasukotelin/shirotelin'
 
 """""""""""""""""""""""""""""""""""""""
 """"""""Light config           """"""""
 
 map <A--> :set background=dark<cr>
 map <A-=> :set background=light<cr>
+map <leader>p :color paper<cr>
+map <leader>g :color gruvbox<cr>
 
 
 
@@ -125,6 +130,8 @@ Plug 'ctrlpvim/ctrlp.vim'
 
 """ Last plugins""""""
 Plug 'ryanoasis/vim-devicons'
+"
+"
 """""""""""""""""""""""""""""""""""""""
 """"" End of plugin section""""""""""""
 call plug#end()
@@ -202,6 +209,8 @@ let g:airline_section_y = ""
 let g:airline_section_error =""
 " au ColorScheme * hi Normal ctermbg=none
 " set termguicolors
+let g:gruvbox_contrast_light='soft'
+let g:gruvbox_contrast_dark='soft'
 syntax enable
 
 
@@ -347,7 +356,25 @@ let g:tagbar_type_rmd = {
           \ }
 
 
-
+if has('gui_running') || &termguicolors
+     let rout_color_input    = 'guifg=#000000'
+     let rout_color_normal   = 'guifg=#000000'
+     let rout_color_number   = 'guifg=#000000'
+     let rout_color_integer  = 'guifg=#000000'
+     let rout_color_float    = 'guifg=#000000'
+     let rout_color_complex  = 'guifg=#000000'
+     let rout_color_negnum   = 'guifg=#000000'
+     let rout_color_negfloat = 'guifg=#000000'
+     let rout_color_date     = 'guifg=#000000'
+     let rout_color_true     = 'guifg=#000000'
+     let rout_color_false    = 'guifg=#000000'
+     let rout_color_inf      = 'guifg=#000000'
+     let rout_color_constant = 'guifg=#000000'
+     let rout_color_string   = 'guifg=#000000'
+     let rout_color_error    = 'guifg=#ffffff guibg=#c40000'
+     let rout_color_warn     = 'guifg=#000000'
+     let rout_color_index    = 'guifg=#000000'
+   endif
 """ clang config
 "let g:clang_library_path='/usr/lib64/libclang.so.10'
 

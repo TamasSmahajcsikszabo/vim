@@ -27,6 +27,8 @@ Plug 'jalvesaq/vimcmdline'
 Plug 'myhere/vim-nodejs-complete'
 Plug 'chrisbra/csv.vim'
 Plug 'xavierd/clang_complete'
+Plug 'lifepillar/vim-cheat40'
+" Plug 'jpalardy/vim-slime'
 
 """""""""""""""""""""""""""""""""""""""""
 """""""" Visuals"""""""""""""""""""""""""
@@ -56,8 +58,8 @@ Plug 'yasukotelin/shirotelin'
 
 map <A--> :set background=dark<cr>
 map <A-=> :set background=light<cr>
-map <leader>p :color paper<cr>
-map <leader>g :color gruvbox<cr>
+map <leader>p :color paper \| :AirlineTheme solarized<cr>
+map <leader>g :color gruvbox \| :AirlineTheme gruvbox<cr>
 
 
 
@@ -123,7 +125,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'nikvdp/ejs-syntax'
 
 """"""""""""""""""""""""""""""""""""""
-""" Fuzzy search""""""""""""""""""""""
+""" Fuzzy search""""""""""""""""""""""
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'ctrlpvim/ctrlp.vim'
@@ -162,6 +164,17 @@ let g:tagbar_type_r = {
     \ ]
 \ }
 
+
+let g:tagbar_type_rmd = {
+          \   'ctagstype':'rmd'
+          \ , 'kinds':['h:header', 'c:chunk', 'f:function', 'v:variable']
+          \ , 'sro':'&&&'
+          \ , 'kind2scope':{'h':'header', 'c':'chunk'}
+          \ , 'sort':0
+          \ , 'ctagsbin':'/home/tamas/repos/setup/rmdtags.py'
+          \ , 'ctagsargs': ''
+          \ }
+
 filetype plugin on
 :let g:notes_directories = ['~/repos/notes']
 " set statusline=%f
@@ -175,6 +188,11 @@ map <C-Left> :tabp<CR>
 map <A-e> :tabedit<CR>
 map <A-o> :tabonly<CR>
 map <A-z> :tabclose<CR>
+
+" swap file location set
+
+set swapfile
+set dir='/home/tamas/swap'
 
 
 """""""""""""""""""""""""""""""""""""
@@ -195,7 +213,7 @@ set expandtab       " Expand TABs to spaces
 """"" Visual config""""""""""""""""""""""
 colorscheme gruvbox
 set background=dark
-let g:airline_theme='gruvbox'
+let g:airline_theme='solarized'
 set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_alt_sep = '|'
@@ -323,6 +341,10 @@ nmap <C-z> <Plug>RSendSelection
 imap <C-z> <Plug>RSendSelection
 vmap <C-z> <Plug>RSendSelection
 
+" nmap <C-c C-c> <Plug>SlimeSendCurrentLine
+" imap <C-c C-c> <Plug>SlimeSendCurrentLine
+" vmap <C-c C-c> <Plug>SlimeSendCurrentLine
+
 " autocmd FileType r inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
 " autocmd FileType rnoweb inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
 " autocmd FileType rmd inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
@@ -345,16 +367,6 @@ nmap <A-z> :RMarkdown! word - quiet=FALSE<cr>
 imap <A-z> :RMarkdown! word - quiet=FALSE<cr> 
 vmap <A-z> :RMarkdown! word - quiet=FALSE<cr> 
 
-let g:tagbar_type_rmd = {
-          \   'ctagstype':'rmd'
-          \ , 'kinds':['h:header', 'c:chunk', 'f:function', 'v:variable']
-          \ , 'sro':'&&&'
-          \ , 'kind2scope':{'h':'header', 'c':'chunk'}
-          \ , 'sort':0
-          \ , 'ctagsbin':'/home/tamas/repos/setup/rmdtags.py'
-          \ , 'ctagsargs': ''
-          \ }
-
 
 if has('gui_running') || &termguicolors
      let rout_color_input    = 'guifg=#000000'
@@ -375,7 +387,11 @@ if has('gui_running') || &termguicolors
      let rout_color_warn     = 'guifg=#000000'
      let rout_color_index    = 'guifg=#000000'
    endif
-""" clang config
+
+let g:slime_target = "tmux"
+
+
+"" clang config
 "let g:clang_library_path='/usr/lib64/libclang.so.10'
 
 
@@ -428,6 +444,3 @@ nnoremap <C-g> :GFiles<CR>
 
 nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>h :History<CR>
-
-
-

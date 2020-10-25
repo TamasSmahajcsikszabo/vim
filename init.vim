@@ -216,7 +216,7 @@ set background=dark
 let g:airline_theme='solarized'
 set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#left_alt_sep = ''
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline_right_sep = ''
 let g:airline_left_sep = '' 
@@ -225,7 +225,7 @@ let g:airline_symbols_ascii=1
 let g:airline_section_x = ""
 let g:airline_section_y = ""
 let g:airline_section_error =""
-" au ColorScheme * hi Normal ctermbg=none
+au ColorScheme * hi Normal ctermbg=none
 " set termguicolors
 let g:gruvbox_contrast_light='soft'
 let g:gruvbox_contrast_dark='soft'

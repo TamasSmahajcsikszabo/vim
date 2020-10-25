@@ -58,7 +58,7 @@ Plug 'yasukotelin/shirotelin'
 
 map <A--> :set background=dark<cr>
 map <A-=> :set background=light<cr>
-map <leader>p :color paper \| :AirlineTheme solarized<cr>
+map <leader>p :color paper \| :AirlineTheme minimalist<cr>
 map <leader>g :color gruvbox \| :AirlineTheme gruvbox<cr>
 
 

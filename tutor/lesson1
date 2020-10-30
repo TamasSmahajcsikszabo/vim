@@ -1,0 +1,46 @@
+The Vim Way
+
+# the . command
+# x deletes the character under the cursor
+# dd does that for the whole line
+# >G increases the indentation from the current line until the end of the file
+
+Line one
+    Line two
+        Line three
+            Line four
+
+# don't repeat yourself
+
+# $ jumps the end of the line
+# a;<ESC>.
+# A;<ESC>j. A appends at the end of the current line: A = $a
+
+var foo = 1;
+var bar = 'a'
+var foobar = foo + bar
+
+# C = c$ # deletes from cursor location
+# s = cl # deletes one character
+# S = ^C # deletes a line
+
+# one step back, three forward
+# f+ s ; 
+# ; repeats the last search f did
+
+var foo = "method(" + argument1 + "," + argument2 + ")";
+
+
+#act, repeat, reverse
+# @: repeats any Ex command
+# & repeats the last :substitute (:s)
+# reversing:
+    # u undoes the last .
+    # , jumps back for f
+    # N is the reverse of / n
+
+#recordings
+# execute a range of changes with qx{changes}q
+    # repeat @x
+    # undo u
+

@@ -28,7 +28,9 @@ Plug 'myhere/vim-nodejs-complete'
 Plug 'chrisbra/csv.vim'
 Plug 'xavierd/clang_complete'
 Plug 'lifepillar/vim-cheat40'
-" Plug 'jpalardy/vim-slime'
+Plug 'junegunn/gv.vim'
+Plug 'swalladge/antarctic-vim'
+Plug 'soywod/iris.vim'
 
 """""""""""""""""""""""""""""""""""""""""
 """""""" Visuals"""""""""""""""""""""""""
@@ -52,6 +54,10 @@ Plug 'https://gitlab.com/yorickpeterse/vim-paper.git'
 Plug 'altercation/vim-colors-solarized'
 Plug 'jaredgorski/fogbell.vim'
 Plug 'yasukotelin/shirotelin'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'ashfinal/vim-colors-paper'
+Plug 'vim-scripts/AutumnLeaf'
+Plug 'cormacrelf/vim-colors-github'
 
 """""""""""""""""""""""""""""""""""""""
 """"""""Light config           """"""""
@@ -59,6 +65,7 @@ Plug 'yasukotelin/shirotelin'
 map <A--> :set background=dark<cr>
 map <A-=> :set background=light<cr>
 map <leader>p :color paper \| :AirlineTheme minimalist<cr>
+map <leader>o :color OceanicNextLight \| :AirlineTheme minimalist<cr>
 map <leader>g :color gruvbox \| :AirlineTheme gruvbox<cr>
 
 
@@ -110,6 +117,9 @@ Plug 'ncm2/ncm2-path'
 Plug 'jupyter-vim/jupyter-vim'
 Plug 'python-mode/python-mode'
 Plug 'honza/vim-snippets'
+" Plug 'davidhalter/jedi-vim'
+" Plug 'zchee/deoplete-jedi'
+
 
 
 
@@ -119,7 +129,7 @@ Plug 'honza/vim-snippets'
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
 Plug 'carlitux/deoplete-ternjs'
 Plug 'roxma/vim-hug-neovim-rpc'
-" Plug 'dense-analysis/ale'
+Plug 'dense-analysis/ale'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot' 
 Plug 'nikvdp/ejs-syntax'
@@ -147,13 +157,17 @@ call plug#end()
 """"""""""""""""""""""""""""""""""""""""
 """" Start command""""""""""""""""""""""
 syntax on
+nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
+
+
+
 let g:ale_completion_enabled = 1
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
 " set runtimepath+=~/.config/nvim/bundle/deoplete.nvim/
 " let g:deoplete#enable_at_startup = 1
-let g:coc_node_path = '/home/tamas/.nvm/versions/node/v14.5.0/bin/node'
+let g:coc_node_path = '/home/tamas/.nvm/versions/node/v14.15.0/bin/node'
 nmap <C-b> :TagbarToggle<CR>
 let g:tagbar_type_r = {
     \ 'ctagstype' : 'r',
@@ -422,6 +436,9 @@ let g:fzf_colors =
   \ 'marker':  ['fg', 'Keyword'],
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
+let g:fzf_buffers_jump = 1
+let g:fzf_buffers_jump = 1
+let g:fzf_commands_expect = 'alt-enter,ctrl-x'
 
 " Mapping selecting mappings
 nmap <c-tab> <plug>(fzf-maps-n)
@@ -439,8 +456,24 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 " Advanced customization using autoload functions
 inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
 
-nnoremap <C-f> :Files<CR>
-nnoremap <C-g> :GFiles<CR>
+" nnoremap <C-f> :Files<CR>
+" nnoremap <C-g> :GFiles<CR>
 
 nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>h :History<CR>
+
+"Iris config
+let g:iris_name  = "Tamas"
+let g:iris_mail = "tamas.smahajcsikszabo@outlook.hu"
+let g:iris_imap_host  = "outlook.office365.com"
+let g:iris_imap_port  = 993
+let g:iris_imap_login = "tamas.smahajcsikszabo@outlook.hu" "Default to g:iris_mail
+let g:iris_smtp_host  = "smtp.office365.com" "Default to g:iris_imap_host
+let g:iris_smtp_port  = 587
+let g:iris_smtp_login = "tamas.smahajcsikszabo@outlook.hu" "Default to g:iris_mail
+let g:iris_download_dir = "~/Downloads"
+let g:iris_idle_enabled = 1
+let g:iris_idle_timeout = 15
+let g:iris_emails_chunk_size = 20
+let g:iris_imap_passwd_filepath = "/home/tamas/.pwd"
+let g:iris_smtp_passwd_filepath = "/home/tamas/.pwd"

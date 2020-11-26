@@ -58,6 +58,11 @@ Plug 'NLKNguyen/papercolor-theme'
 Plug 'ashfinal/vim-colors-paper'
 Plug 'vim-scripts/AutumnLeaf'
 Plug 'cormacrelf/vim-colors-github'
+Plug 'dfxyz/CandyPaper.vim'
+Plug 'megantiu/true.vim'
+Plug 'logico/typewriter-vim'
+Plug 'alexanderjeurissen/lumiere.vim'
+Plug 'arzg/vim-mayanfog'
 
 """""""""""""""""""""""""""""""""""""""
 """"""""Light config           """"""""
@@ -65,6 +70,7 @@ Plug 'cormacrelf/vim-colors-github'
 map <A--> :set background=dark<cr>
 map <A-=> :set background=light<cr>
 map <leader>p :color paper \| :AirlineTheme minimalist<cr>
+map <leader>c :color CandyPaper \| :AirlineTheme minimalist<cr>
 map <leader>o :color OceanicNextLight \| :AirlineTheme minimalist<cr>
 map <leader>g :color gruvbox \| :AirlineTheme gruvbox<cr>
 
@@ -227,6 +233,7 @@ set expandtab       " Expand TABs to spaces
 """"" Visual config""""""""""""""""""""""
 colorscheme gruvbox
 set background=dark
+let g:lumiere_inverse=0
 let g:airline_theme='solarized'
 set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175
 let g:airline#extensions#tabline#enabled = 1

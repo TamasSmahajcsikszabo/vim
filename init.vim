@@ -31,6 +31,7 @@ Plug 'lifepillar/vim-cheat40'
 Plug 'junegunn/gv.vim'
 Plug 'swalladge/antarctic-vim'
 Plug 'soywod/iris.vim'
+Plug 'HerringtonDarkholme/w3m.vim'
 
 """""""""""""""""""""""""""""""""""""""""
 """""""" Visuals"""""""""""""""""""""""""
@@ -63,6 +64,8 @@ Plug 'megantiu/true.vim'
 Plug 'logico/typewriter-vim'
 Plug 'alexanderjeurissen/lumiere.vim'
 Plug 'arzg/vim-mayanfog'
+Plug 'jsit/toast.vim'
+Plug 'aereal/vim-colors-japanesque'
 
 """""""""""""""""""""""""""""""""""""""
 """"""""Light config           """"""""
@@ -70,9 +73,11 @@ Plug 'arzg/vim-mayanfog'
 map <A--> :set background=dark<cr>
 map <A-=> :set background=light<cr>
 map <leader>p :color paper \| :AirlineTheme minimalist<cr>
-map <leader>c :color CandyPaper \| :AirlineTheme minimalist<cr>
+map <leader>c :color PaperColor \| :AirlineTheme minimalist<cr>
 map <leader>o :color OceanicNextLight \| :AirlineTheme minimalist<cr>
+map <leader>t :color toast \| :AirlineTheme minimalist<cr>
 map <leader>g :color gruvbox \| :AirlineTheme gruvbox<cr>
+map <leader>j :color japanesque \| :AirlineTheme minimalist<cr>
 
 
 
@@ -416,6 +421,10 @@ let g:slime_target = "tmux"
 "let g:clang_library_path='/usr/lib64/libclang.so.10'
 
 
+let g:syntastic_enable_r_lintr_checker = 1
+let g:syntastic_r_checkers = 1
+
+
 "**************************************"
 """"""""" Fuzzy search options""""""""""
 "cltrp options
@@ -484,3 +493,9 @@ let g:iris_idle_timeout = 15
 let g:iris_emails_chunk_size = 20
 let g:iris_imap_passwd_filepath = "/home/tamas/.pwd"
 let g:iris_smtp_passwd_filepath = "/home/tamas/.pwd"
+
+function Rfix()
+    let file = expand("%:p")
+    echo file
+    !R CMD BATCH /home/tamas/Rfix.R file
+endfunction

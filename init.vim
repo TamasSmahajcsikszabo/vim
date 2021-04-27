@@ -32,6 +32,11 @@ Plug 'junegunn/gv.vim'
 Plug 'swalladge/antarctic-vim'
 Plug 'soywod/iris.vim'
 Plug 'HerringtonDarkholme/w3m.vim'
+Plug 'skanehira/docker.vim'
+Plug 'skanehira/docker-compose.vim'
+Plug 'danishprakash/vim-docker'
+Plug 'HendrikPetertje/vimify'
+Plug 'mhinz/vim-startify'
 
 """""""""""""""""""""""""""""""""""""""""
 """""""" Visuals"""""""""""""""""""""""""
@@ -66,6 +71,11 @@ Plug 'alexanderjeurissen/lumiere.vim'
 Plug 'arzg/vim-mayanfog'
 Plug 'jsit/toast.vim'
 Plug 'aereal/vim-colors-japanesque'
+Plug 'mg979/vim-studio-dark'
+Plug 'nightsense/stellarized' 
+Plug 'ghifarit53/tokyonight-vim'
+" Plug 'equt/paper.vim'
+Plug 'aonemd/quietlight.vim'
 
 """""""""""""""""""""""""""""""""""""""
 """"""""Light config           """"""""
@@ -77,7 +87,8 @@ map <leader>c :color PaperColor \| :AirlineTheme minimalist<cr>
 map <leader>o :color OceanicNextLight \| :AirlineTheme minimalist<cr>
 map <leader>t :color toast \| :AirlineTheme minimalist<cr>
 map <leader>g :color gruvbox \| :AirlineTheme gruvbox<cr>
-map <leader>j :color japanesque \| :AirlineTheme minimalist<cr>
+map <leader>j :color tokyonight \| :AirlineTheme tokyonight<cr>
+map <leader>q :color quietlight \| :AirlineTheme minimalist<cr>
 
 
 
@@ -110,8 +121,9 @@ Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-path'
 Plug 'gaalcaras/ncm-R'
 Plug 'roxma/vim-hug-neovim-rpc'
-Plug 'sirver/UltiSnips'
-Plug 'ncm2/ncm2-ultisnips'
+" Plug 'sirver/UltiSnips'
+" Plug 'ncm2/ncm2-ultisnips'
+Plug 'jalvesaq/R-Vim-runtime'
 Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
@@ -128,7 +140,7 @@ Plug 'ncm2/ncm2-path'
 Plug 'jupyter-vim/jupyter-vim'
 Plug 'python-mode/python-mode'
 Plug 'honza/vim-snippets'
-" Plug 'davidhalter/jedi-vim'
+Plug 'davidhalter/jedi-vim'
 " Plug 'zchee/deoplete-jedi'
 
 
@@ -136,7 +148,7 @@ Plug 'honza/vim-snippets'
 
 """""""""""""""""""""""""""""""""""""""
 """""" Javascript autocompltion""""""""
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
 Plug 'carlitux/deoplete-ternjs'
 Plug 'roxma/vim-hug-neovim-rpc'
@@ -190,17 +202,18 @@ let g:tagbar_type_r = {
 \ }
 
 
-let g:tagbar_type_rmd = {
-          \   'ctagstype':'rmd'
-          \ , 'kinds':['h:header', 'c:chunk', 'f:function', 'v:variable']
-          \ , 'sro':'&&&'
-          \ , 'kind2scope':{'h':'header', 'c':'chunk'}
-          \ , 'sort':0
-          \ , 'ctagsbin':'/home/tamas/repos/setup/rmdtags.py'
-          \ , 'ctagsargs': ''
-          \ }
+" let g:tagbar_type_rmd = {
+"           \   'ctagstype':'rmd'
+"           \ , 'kinds':['h:header', 'c:chunk', 'f:function', 'v:variable']
+"           \ , 'sro':'&&&'
+"           \ , 'kind2scope':{'h':'header', 'c':'chunk'}
+"           \ , 'sort':0
+"           \ , 'ctagsbin':'/home/tamas/repos/setup/rmdtags.py'
+"           \ , 'ctagsargs': ''
+"           \ }
 
 filetype plugin on
+filetype plugin indent on
 :let g:notes_directories = ['~/repos/notes']
 " set statusline=%f
 " set statusline+=%{coc#status()}
@@ -287,6 +300,12 @@ map <A-x> :IPython<cr>
 autocmd FileType python imap <A-c> <Esc>:normal! a ->  <CR><Esc>i
 let g:pymode_lint_config = '$HOME/pylint.rc'
 
+
+" let g:jupyter_mapkeys = 0
+" autocmd FileType python noremap <buffer><c-s> :JupyterSendCount <CR>
+" autocmd FileType python noremap <buffer><localleader>rf :JupyterConnect <CR>
+" autocmd FileType python noremap <buffer><localleader>rc :JupyterDisconnect <CR>
+" let g:jupyter_monitor_console = 0
 
 """"""""""""""""""""""""""""""""""""""""
 """""" cmdline config """"""""""""""""""
@@ -384,9 +403,9 @@ autocmd FileType Rmd imap <A--> <Esc>:normal! a <-  <CR><Esc>i
 " imap <A-m> :RMarkdown<cr> 
 " vmap <A-m> :RMarkdown<cr> 
 
-nmap <A-m-m> :RMarkdown! pdf latex_engine="xelatex", toc=TRUE<cr> 
-imap <A-m-m> :RMarkdown! pdf latex_engine="xelatex", toc=TRUE<cr> 
-vmap <A-m-m> :RMarkdown! pdf latex_engine="xelatex", toc=TRUE<cr> 
+nmap <A-m-m> :RMarkdown! pdf latex_engine="xelatex"<cr> 
+imap <A-m-m> :RMarkdown! pdf latex_engine="xelatex"<cr> 
+vmap <A-m-m> :RMarkdown! pdf latex_engine="xelatex"<cr> 
 
 
 nmap <A-z> :RMarkdown! word - quiet=FALSE<cr> 
@@ -499,3 +518,16 @@ function Rfix()
     echo file
     !R CMD BATCH /home/tamas/Rfix.R file
 endfunction
+
+""""""""""""""""
+" tokyionight support
+let g:tokyonight_disable_italic_comment = 1
+let g:tokyonight_enable_italic = 0
+let g:tokyonight_style = 'night'
+" colorscheme tokyonight
+
+" Spotify integration
+let g:spotify_token = 'N2IxYWNhZGE3OTY0NDliYjgzMmUyOTVhYWQxOTllZjg6YTYxNGM4YTMxNTg5NGI0ZGE4ZjZmNzE5NDdhZjQyZDc='
+
+
+" au! BufNewFile,BufRead *.Rmd set filetype=rmd

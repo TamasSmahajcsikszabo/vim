@@ -76,6 +76,10 @@ Plug 'nightsense/stellarized'
 Plug 'ghifarit53/tokyonight-vim'
 " Plug 'equt/paper.vim'
 Plug 'aonemd/quietlight.vim'
+Plug 'tssm/c64-vim-color-scheme'
+Plug 'ajlende/nms.vim'
+Plug 'habamax/vim-freyeday'
+Plug 'vimcolorschemes/vimcolorschemes'
 
 """""""""""""""""""""""""""""""""""""""
 """"""""Light config           """"""""
@@ -143,6 +147,20 @@ Plug 'honza/vim-snippets'
 Plug 'davidhalter/jedi-vim'
 " Plug 'zchee/deoplete-jedi'
 
+"""""""""""""""""""""
+""" Rust         """
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/lsp_extensions.nvim'
+Plug 'nvim-lua/completion-nvim'
+Plug 'simrat39/rust-tools.nvim'
+
+" Optional dependencies
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
+" Debugging (needs plenary from above as well)
+Plug 'mfussenegger/nvim-dap'
 
 
 
@@ -152,7 +170,7 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
 Plug 'carlitux/deoplete-ternjs'
 Plug 'roxma/vim-hug-neovim-rpc'
-Plug 'dense-analysis/ale'
+" Plug 'dense-analysis/ale'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot' 
 Plug 'nikvdp/ejs-syntax'
@@ -264,7 +282,7 @@ let g:airline_symbols_ascii=1
 let g:airline_section_x = ""
 let g:airline_section_y = ""
 let g:airline_section_error =""
-au ColorScheme * hi Normal ctermbg=none
+" au ColorScheme * hi Normal ctermbg=none
 " set termguicolors
 let g:gruvbox_contrast_light='soft'
 let g:gruvbox_contrast_dark='soft'
@@ -531,3 +549,41 @@ let g:spotify_token = 'N2IxYWNhZGE3OTY0NDliYjgzMmUyOTVhYWQxOTllZjg6YTYxNGM4YTMxN
 
 
 " au! BufNewFile,BufRead *.Rmd set filetype=rmd
+"
+"
+" """"""""""""""""""""""
+" """ Lua config """
+" """"""""""""""""""""""
+
+set shortmess+=c
+
+" Configure LSP
+" https://github.com/neovim/nvim-lspconfig#rust_analyzer
+lua <<EOF
+
+-- nvim_lsp object
+local nvim_lsp = require'lspconfig'
+
+-- function to attach completion when setting up lsp
+local on_attach = function(client)
+    require'completion'.on_attach(client)
+end
+
+-- Enable rust_analyzer
+nvim_lsp.rust_analyzer.setup({ on_attach=on_attach })
+
+-- Enable diagnostics
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  vim.lsp.diagnostic.on_publish_diagnostics, {
+    virtual_text = true,
+    signs = true,
+    update_in_insert = true,
+  }
+)
+EOF
+
+" Set updatetime for CursorHold
+" 300ms of no cursor movement to trigger CursorHold
+set updatetime=300
+" Show diagnostic popup on cursor hold
+" autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()

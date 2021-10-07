@@ -1,9 +1,8 @@
 call plug#begin('~/.vim/plugged')
 """""""""""""""""""""""""""""""""""""""""
 """""""" Vim-Plug Plugins""""""""""""""""
-
 Plug 'junegunn/vim-easy-align'
-Plug 'https://github.com/junegunn/vim-github-dashboard.git'
+Plug 'junegunn/vim-github-dashboard'
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
@@ -11,7 +10,7 @@ Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 Plug 'fatih/vim-go', { 'tag': '*' }
 Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
 Plug 'tpope/vim-commentary'
-Plug 'myusuf3/numbers.vim'
+" Plug 'myusuf3/numbers.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'majutsushi/tagbar'
 Plug 'jalvesaq/vimcmdline'
@@ -29,21 +28,26 @@ Plug 'chrisbra/csv.vim'
 Plug 'xavierd/clang_complete'
 Plug 'lifepillar/vim-cheat40'
 Plug 'junegunn/gv.vim'
-Plug 'swalladge/antarctic-vim'
-Plug 'soywod/iris.vim'
 Plug 'HerringtonDarkholme/w3m.vim'
 Plug 'skanehira/docker.vim'
 Plug 'skanehira/docker-compose.vim'
 Plug 'danishprakash/vim-docker'
 Plug 'HendrikPetertje/vimify'
 Plug 'mhinz/vim-startify'
+Plug 'tpope/vim-projectionist'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+" Plug 'soywod/himalaya', {'rtp': 'vim', 'tag': 'v0.4.0'}
+Plug 'soywod/himalaya', {'rtp': 'vim'}
+Plug 'tpope/vim-unimpaired'
+
+
+
 
 """""""""""""""""""""""""""""""""""""""""
 """""""" Visuals"""""""""""""""""""""""""
 Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'zacanger/angr.vim'
 Plug 'tyrannicaltoucan/vim-deep-space'
 Plug 'nanotech/jellybeans.vim'
 Plug 'christophermca/meta5'
@@ -72,7 +76,6 @@ Plug 'arzg/vim-mayanfog'
 Plug 'jsit/toast.vim'
 Plug 'aereal/vim-colors-japanesque'
 Plug 'mg979/vim-studio-dark'
-Plug 'nightsense/stellarized' 
 Plug 'ghifarit53/tokyonight-vim'
 " Plug 'equt/paper.vim'
 Plug 'aonemd/quietlight.vim'
@@ -80,6 +83,9 @@ Plug 'tssm/c64-vim-color-scheme'
 Plug 'ajlende/nms.vim'
 Plug 'habamax/vim-freyeday'
 Plug 'vimcolorschemes/vimcolorschemes'
+Plug 'uguu-org/vim-matrix-screensaver'
+Plug 'bluz71/vim-nightfly-guicolors'
+Plug 'sainnhe/everforest'
 
 """""""""""""""""""""""""""""""""""""""
 """"""""Light config           """"""""
@@ -93,6 +99,10 @@ map <leader>t :color toast \| :AirlineTheme minimalist<cr>
 map <leader>g :color gruvbox \| :AirlineTheme gruvbox<cr>
 map <leader>j :color tokyonight \| :AirlineTheme tokyonight<cr>
 map <leader>q :color quietlight \| :AirlineTheme minimalist<cr>
+map <leader>m :color mayanfog \| :AirlineTheme minimalist<cr>
+map <leader>n :color nightfly\| :AirlineTheme nightfly<cr>
+map <leader>e :color everforest\| :set background=dark \| :AirlineTheme everforest <cr>
+
 
 
 
@@ -232,18 +242,12 @@ let g:tagbar_type_r = {
 
 filetype plugin on
 filetype plugin indent on
-:let g:notes_directories = ['~/repos/notes']
+let g:notes_directories = ['~/repos/notes']
 " set statusline=%f
 " set statusline+=%{coc#status()}
 " set statusline+=%{FugitiveStatusline()}
 tnoremap <Esc> <C-\><C-n>
 
-" Tab actions
-map <C-Right> :tabn<CR>
-map <C-Left> :tabp<CR>
-map <A-e> :tabedit<CR>
-map <A-o> :tabonly<CR>
-map <A-z> :tabclose<CR>
 
 " swap file location set
 
@@ -267,33 +271,109 @@ set expandtab       " Expand TABs to spaces
 
 """"""""""""""""""""""""""""""""""""""""
 """"" Visual config""""""""""""""""""""""
+set hidden
+set updatetime=3000
+let setting= "hjkl"
+
+function! g:ToggleLayout()
+    if setting == "arrow"
+        let setting = "hjkl"
+        echo "HJKL mode activated!"
+        noremap <Up> <Nop>
+        noremap <Down> <Nop
+        noremap <Left> <Nop>
+        noremap <Right> <Nop>
+        inoremap <Up> <Nop>
+        inoremap <Down> <Nop>
+        inoremap <Left> <Nop>
+        inoremap <Right> <Nop>
+        map <C-l> :tabn<CR>
+        map <C-h> :tabp<CR>
+    else
+        echo "Arrow mode activated!"
+        let setting = "arrow"
+        map <C-Right> :tabn<CR>
+        map <C-Left> :tabp<CR>
+        map <A-e> :tabedit<CR>
+        map <A-o> :tabonly<CR>
+        map <A-z> :tabclose<CR>
+    endif
+endfunction
+xnoremap <A-l> :ToggleLayout()<CR>
+
+function! s:VSetSearch(cmdtype)
+    let temp = @s
+    norm! gv"sy
+    let @/ = '\V' . substitute(escape(@s, a:cmdtype.'\'), '\n', '\\n', 'g')
+    let @s = temp
+endfunction
+
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+let col = col('.') - 1
+return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                          \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+if (index(['vim','help'], &filetype) >= 0)
+execute 'h '.expand('<cword>')
+elseif (coc#rpc#ready())
+call CocActionAsync('doHover')
+else
+execute '!' . &keywordprg . " " . expand('<cword>')
+endif
+endfunction
+
+let g:gruvbox_contrast_light='soft'
+let g:gruvbox_contrast_dark='soft'
+let g:everforest_background = 'hard'
 colorscheme gruvbox
-set background=dark
+syntax enable
+set background=light
 let g:lumiere_inverse=0
-let g:airline_theme='solarized'
+let g:airline_theme='gruvbox'
 set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_alt_sep = ''
+let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline_right_sep = ''
 let g:airline_left_sep = '' 
 let g:airline_powerline_fonts=1
 let g:airline_symbols_ascii=1
+
+
 let g:airline_section_x = ""
 let g:airline_section_y = ""
 let g:airline_section_error =""
 " au ColorScheme * hi Normal ctermbg=none
 " set termguicolors
-let g:gruvbox_contrast_light='soft'
-let g:gruvbox_contrast_dark='soft'
-syntax enable
 
 
 if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+set termguicolors
 endif
+
+function! TreesitterStatus(...)
+" let opts = {
+" indicator_size = 100,
+" type_patterns = {'class', 'function', 'method'},
+" transform_fn = function(line) return line:gsub('%s*[%[%(%{]*%s*$', '') end,
+" separator = ' -> '
+" }
+let w:airline_section_x = '%{nvim_treesitter#statusline()}'
+endfunction
+call airline#add_statusline_func('TreesitterStatus')
 
 
 
@@ -372,20 +452,21 @@ let g:tern#command = ["tern"]
 let g:tern#arguments = [" — persistent"]
 " call deoplete#custom#option('sources', {'_': ['ale']})
 let g:ale_fix_on_save = 1
-set updatetime=300
 set nobackup
 set nowritebackup
 inoremap <silent><expr> <c-z> coc#refresh()
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
+if (index(['vim','help'], &filetype) >= 0)
+execute 'h '.expand('<cword>')
+else
+call CocAction('doHover')
+endif
 endfunction
+
 autocmd FileType javascript imap <A-c> <Esc>:normal! a => <CR><Esc>i
 autocmd FileType javascript nmap <A-c> <Esc>:normal! a => <CR><Esc>i
+
 let g:nodejs_complete_config = {
 \  'js_compl_fn': 'jscomplete#CompleteJS',
 \  'max_node_compl_len': 15
@@ -432,24 +513,24 @@ vmap <A-z> :RMarkdown! word - quiet=FALSE<cr>
 
 
 if has('gui_running') || &termguicolors
-     let rout_color_input    = 'guifg=#000000'
-     let rout_color_normal   = 'guifg=#000000'
-     let rout_color_number   = 'guifg=#000000'
-     let rout_color_integer  = 'guifg=#000000'
-     let rout_color_float    = 'guifg=#000000'
-     let rout_color_complex  = 'guifg=#000000'
-     let rout_color_negnum   = 'guifg=#000000'
-     let rout_color_negfloat = 'guifg=#000000'
-     let rout_color_date     = 'guifg=#000000'
-     let rout_color_true     = 'guifg=#000000'
-     let rout_color_false    = 'guifg=#000000'
-     let rout_color_inf      = 'guifg=#000000'
-     let rout_color_constant = 'guifg=#000000'
-     let rout_color_string   = 'guifg=#000000'
-     let rout_color_error    = 'guifg=#ffffff guibg=#c40000'
-     let rout_color_warn     = 'guifg=#000000'
-     let rout_color_index    = 'guifg=#000000'
-   endif
+ let rout_color_input    = 'guifg=#000000'
+ let rout_color_normal   = 'guifg=#000000'
+ let rout_color_number   = 'guifg=#000000'
+ let rout_color_integer  = 'guifg=#000000'
+ let rout_color_float    = 'guifg=#000000'
+ let rout_color_complex  = 'guifg=#000000'
+ let rout_color_negnum   = 'guifg=#000000'
+ let rout_color_negfloat = 'guifg=#000000'
+ let rout_color_date     = 'guifg=#000000'
+ let rout_color_true     = 'guifg=#000000'
+ let rout_color_false    = 'guifg=#000000'
+ let rout_color_inf      = 'guifg=#000000'
+ let rout_color_constant = 'guifg=#000000'
+ let rout_color_string   = 'guifg=#000000'
+ let rout_color_error    = 'guifg=#ffffff guibg=#c40000'
+ let rout_color_warn     = 'guifg=#000000'
+ let rout_color_index    = 'guifg=#000000'
+endif
 
 let g:slime_target = "tmux"
 
@@ -465,49 +546,49 @@ let g:syntastic_r_checkers = 1
 "**************************************"
 """"""""" Fuzzy search options""""""""""
 "cltrp options
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
+" let g:ctrlp_map = '<c-p>'
+" let g:ctrlp_cmd = 'CtrlP'
 " nnoremap <C-p> :Files /home/tamas/ <CR>
+nnoremap <C-p> :<C-u>FZF<CR>
+nnoremap <Leader>f :FZF<CR>
 
 "fzf options
-let g:fzf_action = {
-  \ 'ctrl-t': 'tab split',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
-let g:fzf_layout = { 'down': '~30%' }
-let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
-let g:fzf_buffers_jump = 1
-let g:fzf_buffers_jump = 1
-let g:fzf_commands_expect = 'alt-enter,ctrl-x'
+" let g:fzf_action = {
+"   \ 'ctrl-t': 'tab split',
+"   \ 'ctrl-x': 'split',
+"   \ 'ctrl-v': 'vsplit' }
+" let g:fzf_layout = { 'down': '~30%' }
+" let g:fzf_colors =
+" \ { 'fg':      ['fg', 'Normal'],
+"   \ 'bg':      ['bg', 'Normal'],
+"   \ 'hl':      ['fg', 'Comment'],
+"   \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+"   \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+"   \ 'hl+':     ['fg', 'Statement'],
+"   \ 'info':    ['fg', 'PreProc'],
+"   \ 'border':  ['fg', 'Ignore'],
+"   \ 'prompt':  ['fg', 'Conditional'],
+"   \ 'pointer': ['fg', 'Exception'],
+"   \ 'marker':  ['fg', 'Keyword'],
+"   \ 'spinner': ['fg', 'Label'],
+"   \ 'header':  ['fg', 'Comment'] }
+" let g:fzf_buffers_jump = 1
+" let g:fzf_buffers_jump = 1
+" let g:fzf_commands_expect = 'alt-enter,ctrl-x'
 
 " Mapping selecting mappings
-nmap <c-tab> <plug>(fzf-maps-n)
-xmap <c-tab> <plug>(fzf-maps-x)
-omap <c-tab> <plug>(fzf-maps-o)
-let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
-
-
+" nmap <c-tab> <plug>(fzf-maps-n)
+" xmap <c-tab> <plug>(fzf-maps-x)
+" omap <c-tab> <plug>(fzf-maps-o)
+" let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
 " Insert mode completion
-imap <c-x><c-k> <plug>(fzf-complete-word)
-imap <c-x><c-f> <plug>(fzf-complete-path)
-imap <c-x><c-j> <plug>(fzf-complete-file-ag)
-imap <c-x><c-l> <plug>(fzf-complete-line)
+" imap <c-x><c-k> <plug>(fzf-complete-word)
+" imap <c-x><c-f> <plug>(fzf-complete-path)
+" imap <c-x><c-j> <plug>(fzf-complete-file-ag)
+" imap <c-x><c-l> <plug>(fzf-complete-line)
 
-" Advanced customization using autoload functions
-inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
+" " Advanced customization using autoload functions
+" inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
 
 " nnoremap <C-f> :Files<CR>
 " nnoremap <C-g> :GFiles<CR>
@@ -515,26 +596,11 @@ inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
 nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>h :History<CR>
 
-"Iris config
-let g:iris_name  = "Tamas"
-let g:iris_mail = "tamas.smahajcsikszabo@outlook.hu"
-let g:iris_imap_host  = "outlook.office365.com"
-let g:iris_imap_port  = 993
-let g:iris_imap_login = "tamas.smahajcsikszabo@outlook.hu" "Default to g:iris_mail
-let g:iris_smtp_host  = "smtp.office365.com" "Default to g:iris_imap_host
-let g:iris_smtp_port  = 587
-let g:iris_smtp_login = "tamas.smahajcsikszabo@outlook.hu" "Default to g:iris_mail
-let g:iris_download_dir = "~/Downloads"
-let g:iris_idle_enabled = 1
-let g:iris_idle_timeout = 15
-let g:iris_emails_chunk_size = 20
-let g:iris_imap_passwd_filepath = "/home/tamas/.pwd"
-let g:iris_smtp_passwd_filepath = "/home/tamas/.pwd"
 
 function Rfix()
-    let file = expand("%:p")
-    echo file
-    !R CMD BATCH /home/tamas/Rfix.R file
+let file = expand("%:p")
+echo file
+!R CMD BATCH /home/tamas/Rfix.R file
 endfunction
 
 """"""""""""""""
@@ -549,41 +615,61 @@ let g:spotify_token = 'N2IxYWNhZGE3OTY0NDliYjgzMmUyOTVhYWQxOTllZjg6YTYxNGM4YTMxN
 
 
 " au! BufNewFile,BufRead *.Rmd set filetype=rmd
-"
-"
-" """"""""""""""""""""""
-" """ Lua config """
-" """"""""""""""""""""""
+augroup colorscheme_change | au!
+au ColorScheme gruvbox hi Normal ctermbg=NONE
+augroup END
 
-set shortmess+=c
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""" nvim - treesitter config modules """"""""""""
 
-" Configure LSP
-" https://github.com/neovim/nvim-lspconfig#rust_analyzer
 lua <<EOF
-
--- nvim_lsp object
-local nvim_lsp = require'lspconfig'
-
--- function to attach completion when setting up lsp
-local on_attach = function(client)
-    require'completion'.on_attach(client)
-end
-
--- Enable rust_analyzer
-nvim_lsp.rust_analyzer.setup({ on_attach=on_attach })
-
--- Enable diagnostics
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics, {
-    virtual_text = true,
-    signs = true,
-    update_in_insert = true,
-  }
-)
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = true,
+  },
+}
 EOF
 
-" Set updatetime for CursorHold
-" 300ms of no cursor movement to trigger CursorHold
-set updatetime=300
-" Show diagnostic popup on cursor hold
-" autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "gnn",
+      node_incremental = "grn",
+      scope_incremental = "grc",
+      node_decremental = "grm",
+    },
+  },
+}
+EOF
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  indent = {
+    enable = true
+  }
+}
+EOF
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  statusline = {
+    indicator_size = 300,
+    type_patterns = {'function', 'method', 'indicator'},
+    transform_fn = function(line) return line:gsub('%s*[%[%(%{]*%s*$', '') end,
+    separator = '>>'
+  }
+}
+EOF
+
+
+" set foldmethod=expr
+" set foldexpr=nvim_treesitter#foldexpr()
+
+let g:himalaya_mailbox_picker = 'telescope'
+let g:himalaya_telescope_preview_enabled = 0
+autocmd BufRead,BufNewFile,BufEnter * set nonumber
+autocmd BufRead,BufNewFile,BufEnter *.py source /home/tamas/.config/nvim/cocconfig
+autocmd BufRead,BufNewFile,BufEnter *.R source /home/tamas/.config/nvim/cocconfig

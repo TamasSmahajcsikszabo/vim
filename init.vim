@@ -36,15 +36,14 @@ Plug 'HendrikPetertje/vimify'
 Plug 'mhinz/vim-startify'
 Plug 'tpope/vim-projectionist'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
-" Plug 'soywod/himalaya', {'rtp': 'vim', 'tag': 'v0.4.0'}
 Plug 'soywod/himalaya', {'rtp': 'vim'}
 Plug 'tpope/vim-unimpaired'
+Plug 'phanviet/vim-monokai-pro'
 
 
 
 
-"""""""""""""""""""""""""""""""""""""""""
-"""""""" Visuals"""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""" Visuals"""""""""""""""""""""""""
 Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -99,7 +98,7 @@ map <leader>t :color toast \| :AirlineTheme minimalist<cr>
 map <leader>g :color gruvbox \| :AirlineTheme gruvbox<cr>
 map <leader>j :color tokyonight \| :AirlineTheme tokyonight<cr>
 map <leader>q :color quietlight \| :AirlineTheme minimalist<cr>
-map <leader>m :color mayanfog \| :AirlineTheme minimalist<cr>
+map <leader>m :color monokai_pro\| :AirlineTheme minimalist<cr>
 map <leader>n :color nightfly\| :AirlineTheme nightfly<cr>
 map <leader>e :color everforest\| :set background=dark \| :AirlineTheme everforest <cr>
 
@@ -273,32 +272,38 @@ set expandtab       " Expand TABs to spaces
 """"" Visual config""""""""""""""""""""""
 set hidden
 set updatetime=3000
-let setting= "hjkl"
+" let setting= "hjkl"
 
-function! g:ToggleLayout()
-    if setting == "arrow"
-        let setting = "hjkl"
-        echo "HJKL mode activated!"
-        noremap <Up> <Nop>
-        noremap <Down> <Nop
-        noremap <Left> <Nop>
-        noremap <Right> <Nop>
-        inoremap <Up> <Nop>
-        inoremap <Down> <Nop>
-        inoremap <Left> <Nop>
-        inoremap <Right> <Nop>
-        map <C-l> :tabn<CR>
-        map <C-h> :tabp<CR>
-    else
-        echo "Arrow mode activated!"
-        let setting = "arrow"
-        map <C-Right> :tabn<CR>
-        map <C-Left> :tabp<CR>
-        map <A-e> :tabedit<CR>
-        map <A-o> :tabonly<CR>
-        map <A-z> :tabclose<CR>
-    endif
-endfunction
+" function! g:ToggleLayout()
+"     if setting == "arrow"
+"         let setting = "hjkl"
+"         echo "HJKL mode activated!"
+"         noremap <Up> <Nop>
+"         noremap <Down> <Nop
+"         noremap <Left> <Nop>
+"         noremap <Right> <Nop>
+"         inoremap <Up> <Nop>
+"         inoremap <Down> <Nop>
+"         inoremap <Left> <Nop>
+"         inoremap <Right> <Nop>
+"         map <C-l> :tabn<CR>
+"         map <C-h> :tabp<CR>
+"     else
+"         echo "Arrow mode activated!"
+"         let setting = "arrow"
+"         map <C-Right> :tabn<CR>
+"         map <C-Left> :tabp<CR>
+"         map <A-e> :tabedit<CR>
+"         map <A-o> :tabonly<CR>
+"         map <A-z> :tabclose<CR>
+"     endif
+" endfunction
+" let setting = "arrow"
+map <C-Right> :tabn<CR>
+map <C-Left> :tabp<CR>
+map <A-e> :tabedit<CR>
+map <A-o> :tabonly<CR>
+map <A-z> :tabclose<CR>
 xnoremap <A-l> :ToggleLayout()<CR>
 
 function! s:VSetSearch(cmdtype)
@@ -336,11 +341,17 @@ endfunction
 let g:gruvbox_contrast_light='soft'
 let g:gruvbox_contrast_dark='soft'
 let g:everforest_background = 'hard'
-colorscheme gruvbox
+let g:everforest_cursor = 'orange'
+let g:everforest_disable_italic_comment = 1
+" let g:everforest_transparent_background = 1
+let g:everforest_diagnostic_text_highlight = 1
+let g:everforest_diagnostic_line_highlight = 0
+let g:everforest_diagnostic_virtual_text = 'colored'
+colorscheme everforest
 syntax enable
-set background=light
+set background=dark
 let g:lumiere_inverse=0
-let g:airline_theme='gruvbox'
+let g:airline_theme='everforest'
 set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_alt_sep = '|'
@@ -390,9 +401,9 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 """""""""""""""""""""""""""""""""""""""""
 """"" Python config""""""""""""""""""""""
-let g:syntastic_python_python_exec = 'python3'
+let g:syntastic_python_python_exec = '/usr/bin/python3.9'
 let g:nvim_ipy_perform_mappings = 1
-let g:python3_host_prog = '/usr/bin/python3'
+let g:python3_host_prog = '/usr/bin/python3.9'
 map <silent> <c-s> <Plug>(IPy-Run)
 map <A-x> :IPython<cr>
 autocmd FileType python imap <A-c> <Esc>:normal! a ->  <CR><Esc>i

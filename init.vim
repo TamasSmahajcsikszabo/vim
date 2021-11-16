@@ -102,15 +102,17 @@ map <A-=> :set background=light<cr>
 map <leader>p :color paper \| :AirlineTheme minimalist<cr>
 map <leader>c :color PaperColor \| :AirlineTheme minimalist<cr>
 map <leader>o :color OceanicNextLight \| :AirlineTheme minimalist<cr>
-map <leader>t :color toast \| :AirlineTheme minimalist<cr>
+"map <leader>t :color toast \| :AirlineTheme minimalist<cr>
+map <leader>t :color toast<cr>
 " map <leader>g :color gruvbox \| :AirlineTheme gruvbox<cr>
 map <leader>g :color gruvbox<cr>
 map <leader>j :color tokyonight \| :AirlineTheme tokyonight<cr>
-map <leader>q :color quietlight \| :AirlineTheme minimalist<cr>
+" map <leader>q :color quietlight \| :AirlineTheme minimalist<cr>
 map <leader>m :color monokai_pro\| :AirlineTheme molokai<cr>
 map <leader>n :color nightfly\| :AirlineTheme nightfly<cr>
 " map <leader>e :color everforest\| :set background=dark \| :AirlineTheme everforest <cr>
 map <leader>e :color everforest\| :set background=dark <cr>
+map<leader>q :source ~/.config/nvim/init.vim<cr>
 
 
 
@@ -733,7 +735,7 @@ require'lualine'.setup {
   },
   extensions = {}
   }
-  require('nightfox').load('nordfox')
+  require('nightfox').load('dayfox')
   require('lualine').setup {
   options = {
     -- ... your lualine config

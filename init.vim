@@ -38,15 +38,19 @@ Plug 'tpope/vim-projectionist'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 Plug 'soywod/himalaya', {'rtp': 'vim'}
 Plug 'tpope/vim-unimpaired'
-Plug 'phanviet/vim-monokai-pro'
+Plug 'tpope/vim-surround'
+Plug 'nvim-lualine/lualine.nvim'
+" If you want to have icons in your statusline choose one of these
+Plug 'kyazdani42/nvim-web-devicons'
+
 
 
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""" Visuals"""""""""""""""""""""""""
 Plug 'morhetz/gruvbox'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+" Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
 Plug 'tyrannicaltoucan/vim-deep-space'
 Plug 'nanotech/jellybeans.vim'
 Plug 'christophermca/meta5'
@@ -85,6 +89,10 @@ Plug 'vimcolorschemes/vimcolorschemes'
 Plug 'uguu-org/vim-matrix-screensaver'
 Plug 'bluz71/vim-nightfly-guicolors'
 Plug 'sainnhe/everforest'
+Plug 'Mofiqul/dracula.nvim'
+Plug 'phanviet/vim-monokai-pro'
+Plug 'EdenEast/nightfox.nvim'
+Plug 'sainnhe/sonokai'
 
 """""""""""""""""""""""""""""""""""""""
 """"""""Light config           """"""""
@@ -95,12 +103,14 @@ map <leader>p :color paper \| :AirlineTheme minimalist<cr>
 map <leader>c :color PaperColor \| :AirlineTheme minimalist<cr>
 map <leader>o :color OceanicNextLight \| :AirlineTheme minimalist<cr>
 map <leader>t :color toast \| :AirlineTheme minimalist<cr>
-map <leader>g :color gruvbox \| :AirlineTheme gruvbox<cr>
+" map <leader>g :color gruvbox \| :AirlineTheme gruvbox<cr>
+map <leader>g :color gruvbox<cr>
 map <leader>j :color tokyonight \| :AirlineTheme tokyonight<cr>
 map <leader>q :color quietlight \| :AirlineTheme minimalist<cr>
-map <leader>m :color monokai_pro\| :AirlineTheme minimalist<cr>
+map <leader>m :color monokai_pro\| :AirlineTheme molokai<cr>
 map <leader>n :color nightfly\| :AirlineTheme nightfly<cr>
-map <leader>e :color everforest\| :set background=dark \| :AirlineTheme everforest <cr>
+" map <leader>e :color everforest\| :set background=dark \| :AirlineTheme everforest <cr>
+map <leader>e :color everforest\| :set background=dark <cr>
 
 
 
@@ -347,24 +357,23 @@ let g:everforest_disable_italic_comment = 1
 let g:everforest_diagnostic_text_highlight = 1
 let g:everforest_diagnostic_line_highlight = 0
 let g:everforest_diagnostic_virtual_text = 'colored'
-colorscheme everforest
+" colorscheme everforest
 syntax enable
 set background=dark
-let g:lumiere_inverse=0
-let g:airline_theme='everforest'
 set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:airline_right_sep = ''
-let g:airline_left_sep = '' 
-let g:airline_powerline_fonts=1
-let g:airline_symbols_ascii=1
+" let g:airline_theme='everforest'
+" let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#left_alt_sep = '|'
+" let g:airline#extensions#tabline#formatter = 'unique_tail'
+" let g:airline_right_sep = ''
+" let g:airline_left_sep = '' 
+" let g:airline_powerline_fonts=1
+" let g:airline_symbols_ascii=1
 
 
-let g:airline_section_x = ""
-let g:airline_section_y = ""
-let g:airline_section_error =""
+" let g:airline_section_x = ""
+" let g:airline_section_y = ""
+" let g:airline_section_error =""
 " au ColorScheme * hi Normal ctermbg=none
 " set termguicolors
 
@@ -375,16 +384,16 @@ let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set termguicolors
 endif
 
-function! TreesitterStatus(...)
-" let opts = {
-" indicator_size = 100,
-" type_patterns = {'class', 'function', 'method'},
-" transform_fn = function(line) return line:gsub('%s*[%[%(%{]*%s*$', '') end,
-" separator = ' -> '
-" }
-let w:airline_section_x = '%{nvim_treesitter#statusline()}'
-endfunction
-call airline#add_statusline_func('TreesitterStatus')
+" function! TreesitterStatus(...)
+" " let opts = {
+" " indicator_size = 100,
+" " type_patterns = {'class', 'function', 'method'},
+" " transform_fn = function(line) return line:gsub('%s*[%[%(%{]*%s*$', '') end,
+" " separator = ' -> '
+" " }
+" let w:airline_section_x = '%{nvim_treesitter#statusline()}'
+" endfunction
+" call airline#add_statusline_func('TreesitterStatus')
 
 
 
@@ -684,3 +693,51 @@ let g:himalaya_telescope_preview_enabled = 0
 autocmd BufRead,BufNewFile,BufEnter * set nonumber
 autocmd BufRead,BufNewFile,BufEnter *.py source /home/tamas/.config/nvim/cocconfig
 autocmd BufRead,BufNewFile,BufEnter *.R source /home/tamas/.config/nvim/cocconfig
+
+
+""""" Lualine config """"""
+lua << END
+require'lualine'.setup {
+  options = {
+    icons_enabled = true,
+    theme = 'auto',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {},
+    always_divide_middle = true,
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', 'diff',
+                  {'diagnostics', sources={'nvim_lsp', 'coc'}}},
+    lualine_c = {'filename'},
+    lualine_x = {'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {
+      lualine_a = {'buffers'},
+      lualine_b = {'branch'},
+      lualine_c = {'filename'},
+      lualine_x = {},
+      lualine_y = {},
+      lualine_z = {'tabs'}
+  },
+  extensions = {}
+  }
+  require('nightfox').load('nordfox')
+  require('lualine').setup {
+  options = {
+    -- ... your lualine config
+    theme = "auto"
+  }
+}
+END

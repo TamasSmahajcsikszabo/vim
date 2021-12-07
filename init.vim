@@ -42,7 +42,9 @@ Plug 'tpope/vim-surround'
 Plug 'nvim-lualine/lualine.nvim'
 " If you want to have icons in your statusline choose one of these
 Plug 'kyazdani42/nvim-web-devicons'
-
+Plug 'dylanaraps/pascal_lint.nvim'
+Plug 'Shougo/ddc.vim'
+Plug 'vim-denops/denops.vim'
 
 
 
@@ -142,7 +144,6 @@ map <C-]> :SearchNotes<CR>
 Plug 'jalvesaq/Nvim-R'
 Plug 'ncm2/ncm2'
 Plug 'roxma/nvim-yarp'
-Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-path'
 Plug 'gaalcaras/ncm-R'
 Plug 'roxma/vim-hug-neovim-rpc'
@@ -161,12 +162,12 @@ Plug 'neovim/pynvim'
 Plug 'bfredl/nvim-ipy'
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-jedi'
-Plug 'ncm2/ncm2-path'
-Plug 'jupyter-vim/jupyter-vim'
+"Plug 'jupyter-vim/jupyter-vim'
 Plug 'python-mode/python-mode'
 Plug 'honza/vim-snippets'
 Plug 'davidhalter/jedi-vim'
 " Plug 'zchee/deoplete-jedi'
+Plug 'hkupty/iron.nvim'
 
 """""""""""""""""""""
 """ Rust         """
@@ -187,12 +188,12 @@ Plug 'mfussenegger/nvim-dap'
 
 """""""""""""""""""""""""""""""""""""""
 """""" Javascript autocompltion""""""""
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
-Plug 'carlitux/deoplete-ternjs'
+"Plug 'carlitux/deoplete-ternjs'
 Plug 'roxma/vim-hug-neovim-rpc'
 " Plug 'dense-analysis/ale'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot' 
 Plug 'nikvdp/ejs-syntax'
 
@@ -359,9 +360,9 @@ let g:everforest_disable_italic_comment = 1
 let g:everforest_diagnostic_text_highlight = 1
 let g:everforest_diagnostic_line_highlight = 0
 let g:everforest_diagnostic_virtual_text = 'colored'
-" colorscheme everforest
+colorscheme gruvbox
 syntax enable
-set background=dark
+set background=light
 set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175
 " let g:airline_theme='everforest'
 " let g:airline#extensions#tabline#enabled = 1
@@ -415,8 +416,8 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:syntastic_python_python_exec = '/usr/bin/python3.9'
 let g:nvim_ipy_perform_mappings = 1
 let g:python3_host_prog = '/usr/bin/python3.9'
-map <silent> <c-s> <Plug>(IPy-Run)
-map <A-x> :IPython<cr>
+map <silent> <c-s> <Plug>(iron-send-line)
+map <A-x>  :IronRepl<cr>
 autocmd FileType python imap <A-c> <Esc>:normal! a ->  <CR><Esc>i
 let g:pymode_lint_config = '$HOME/pylint.rc'
 
@@ -735,7 +736,7 @@ require'lualine'.setup {
   },
   extensions = {}
   }
-  require('nightfox').load('dayfox')
+  --require('nightfox').load('dayfox')
   require('lualine').setup {
   options = {
     -- ... your lualine config
@@ -743,3 +744,47 @@ require'lualine'.setup {
   }
 }
 END
+" Customize global settings
+" Use around source.
+" https://github.com/Shougo/ddc-around
+call ddc#custom#patch_global('sources', ['around'])
+
+" Use matcher_head and sorter_rank.
+" https://github.com/Shougo/ddc-matcher_head
+" https://github.com/Shougo/ddc-sorter_rank
+call ddc#custom#patch_global('sourceOptions', {
+      \ '_': {
+      \   'matchers': ['matcher_head'],
+      \   'sorters': ['sorter_rank']},
+      \ })
+
+" Change source options
+call ddc#custom#patch_global('sourceOptions', {
+      \ 'around': {'mark': 'A'},
+      \ })
+call ddc#custom#patch_global('sourceParams', {
+      \ 'around': {'maxSize': 500},
+      \ })
+
+" Customize settings on a filetype
+call ddc#custom#patch_filetype(['c', 'cpp'], 'sources', ['around', 'clangd'])
+call ddc#custom#patch_filetype(['c', 'cpp'], 'sourceOptions', {
+      \ 'clangd': {'mark': 'C'},
+      \ })
+call ddc#custom#patch_filetype('markdown', 'sourceParams', {
+      \ 'around': {'maxSize': 100},
+      \ })
+
+" Mappings
+
+" <TAB>: completion.
+inoremap <silent><expr> <TAB>
+\ ddc#map#pum_visible() ? '<C-n>' :
+\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+\ '<TAB>' : ddc#map#manual_complete()
+
+" <S-TAB>: completion back.
+inoremap <expr><S-TAB>  ddc#map#pum_visible() ? '<C-p>' : '<C-h>'
+
+" Use ddc.
+call ddc#enable()

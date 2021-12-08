@@ -193,7 +193,7 @@ Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
 "Plug 'carlitux/deoplete-ternjs'
 Plug 'roxma/vim-hug-neovim-rpc'
 " Plug 'dense-analysis/ale'
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot' 
 Plug 'nikvdp/ejs-syntax'
 
@@ -416,6 +416,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:syntastic_python_python_exec = '/usr/bin/python3.9'
 let g:nvim_ipy_perform_mappings = 1
 let g:python3_host_prog = '/usr/bin/python3.9'
+map <silent> <c-v> <Plug>(iron-visual-send)
 map <silent> <c-s> <Plug>(iron-send-line)
 map <A-x>  :IronRepl<cr>
 autocmd FileType python imap <A-c> <Esc>:normal! a ->  <CR><Esc>i

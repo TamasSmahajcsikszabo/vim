@@ -28,7 +28,7 @@ Plug 'chrisbra/csv.vim'
 Plug 'xavierd/clang_complete'
 Plug 'lifepillar/vim-cheat40'
 Plug 'junegunn/gv.vim'
-Plug 'HerringtonDarkholme/w3m.vim'
+" Plug 'HerringtonDarkholme/w3m.vim'
 Plug 'skanehira/docker.vim'
 Plug 'skanehira/docker-compose.vim'
 Plug 'danishprakash/vim-docker'
@@ -36,7 +36,7 @@ Plug 'HendrikPetertje/vimify'
 Plug 'mhinz/vim-startify'
 Plug 'tpope/vim-projectionist'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
-Plug 'soywod/himalaya', {'rtp': 'vim'}
+" Plug 'soywod/himalaya', {'rtp': 'vim'}
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-surround'
 Plug 'nvim-lualine/lualine.nvim'
@@ -45,6 +45,12 @@ Plug 'kyazdani42/nvim-web-devicons'
 Plug 'dylanaraps/pascal_lint.nvim'
 Plug 'Shougo/ddc.vim'
 Plug 'vim-denops/denops.vim'
+Plug 'KadoBOT/nvim-spotify', { 'do': 'make' }
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'fatih/vim-go'
+Plug 'miyakogi/conoline.vim'
+Plug 'ms-jpq/coq_nvim'
 
 
 
@@ -95,13 +101,15 @@ Plug 'Mofiqul/dracula.nvim'
 Plug 'phanviet/vim-monokai-pro'
 Plug 'EdenEast/nightfox.nvim'
 Plug 'sainnhe/sonokai'
+Plug 'savq/melange'
+Plug 'rebelot/kanagawa.nvim'
 
 """""""""""""""""""""""""""""""""""""""
 """"""""Light config           """"""""
 
 map <A--> :set background=dark<cr>
 map <A-=> :set background=light<cr>
-map <leader>p :color paper \| :AirlineTheme minimalist<cr>
+map <leader>p :color paper<cr>
 map <leader>c :color PaperColor \| :AirlineTheme minimalist<cr>
 map <leader>o :color OceanicNextLight \| :AirlineTheme minimalist<cr>
 "map <leader>t :color toast \| :AirlineTheme minimalist<cr>
@@ -158,22 +166,22 @@ Plug 'vim-pandoc/vim-rmarkdown'
 """""""""""""""""""""""""""""""""""""""""
 """"""""" Python integration"""""""""""""
 Plug 'neovim/pynvim'
-"Plug 'ivanov/vim-ipython'
-Plug 'bfredl/nvim-ipy'
+" Plug 'ivanov/vim-ipython'
+" Plug 'bfredl/nvim-ipy'
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-jedi'
-"Plug 'jupyter-vim/jupyter-vim'
+Plug 'jupyter-vim/jupyter-vim'
 Plug 'python-mode/python-mode'
 Plug 'honza/vim-snippets'
 Plug 'davidhalter/jedi-vim'
-" Plug 'zchee/deoplete-jedi'
+Plug 'zchee/deoplete-jedi'
 Plug 'hkupty/iron.nvim'
 
 """""""""""""""""""""
 """ Rust         """
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/lsp_extensions.nvim'
-Plug 'nvim-lua/completion-nvim'
+" Plug 'nvim-lua/completion-nvim'
 Plug 'simrat39/rust-tools.nvim'
 
 " Optional dependencies
@@ -188,7 +196,7 @@ Plug 'mfussenegger/nvim-dap'
 
 """""""""""""""""""""""""""""""""""""""
 """""" Javascript autocompltion""""""""
-"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
 "Plug 'carlitux/deoplete-ternjs'
 Plug 'roxma/vim-hug-neovim-rpc'
@@ -230,7 +238,7 @@ let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
 " set runtimepath+=~/.config/nvim/bundle/deoplete.nvim/
 " let g:deoplete#enable_at_startup = 1
-let g:coc_node_path = '/home/tamas/.nvm/versions/node/v14.15.0/bin/node'
+let g:coc_node_path = '/usr/bin/node'
 nmap <C-b> :TagbarToggle<CR>
 let g:tagbar_type_r = {
     \ 'ctagstype' : 'r',
@@ -360,9 +368,8 @@ let g:everforest_disable_italic_comment = 1
 let g:everforest_diagnostic_text_highlight = 1
 let g:everforest_diagnostic_line_highlight = 0
 let g:everforest_diagnostic_virtual_text = 'colored'
-colorscheme gruvbox
+colorscheme paper
 syntax enable
-set background=light
 set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175
 " let g:airline_theme='everforest'
 " let g:airline#extensions#tabline#enabled = 1
@@ -416,9 +423,10 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:syntastic_python_python_exec = '/usr/bin/python3.9'
 let g:nvim_ipy_perform_mappings = 1
 let g:python3_host_prog = '/usr/bin/python3.9'
+" map <silent> <c-v> <Plug>(IPy-Run)
 map <silent> <c-v> <Plug>(iron-visual-send)
 map <silent> <c-s> <Plug>(iron-send-line)
-map <A-x>  :IronRepl<cr>
+map <A-x>  :IronReplHere<cr>
 autocmd FileType python imap <A-c> <Esc>:normal! a ->  <CR><Esc>i
 let g:pymode_lint_config = '$HOME/pylint.rc'
 
@@ -516,11 +524,14 @@ vmap <C-z> <Plug>RSendSelection
 " autocmd FileType r inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
 " autocmd FileType rnoweb inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
 " autocmd FileType rmd inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
-autocmd FileType r imap <C-n> <Esc>:normal! a %>%<CR><Esc>o
-autocmd FileType r imap <A--> <Esc>:normal! a <-  <CR><Esc>i
+" autocmd FileType r imap <C-n> <Esc>:normal! a %>%  <CR><Esc>o
+" autocmd FileType r imap <A-n> <Esc>:normal! a <-  <CR><Esc>i
+autocmd FileType r inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
+autocmd FileType rnoweb inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
+autocmd FileType rmd inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
 
-autocmd FileType Rmd imap <C-n> <Esc>:normal! a %>%<CR><Esc>o
-autocmd FileType Rmd imap <A--> <Esc>:normal! a <-  <CR><Esc>i
+" autocmd FileType Rmd imap <C-n> <Esc>:normal! a %>%  <CR><Esc>o
+" autocmd FileType Rmd imap <A-n> <Esc>:normal! a <-  <CR><Esc>i
 
 " nmap <A-m> :RMarkdown<cr> 
 " imap <A-m> :RMarkdown<cr> 
@@ -535,25 +546,24 @@ nmap <A-z> :RMarkdown! word - quiet=FALSE<cr>
 imap <A-z> :RMarkdown! word - quiet=FALSE<cr> 
 vmap <A-z> :RMarkdown! word - quiet=FALSE<cr> 
 
-
 if has('gui_running') || &termguicolors
- let rout_color_input    = 'guifg=#000000'
- let rout_color_normal   = 'guifg=#000000'
- let rout_color_number   = 'guifg=#000000'
- let rout_color_integer  = 'guifg=#000000'
- let rout_color_float    = 'guifg=#000000'
- let rout_color_complex  = 'guifg=#000000'
- let rout_color_negnum   = 'guifg=#000000'
- let rout_color_negfloat = 'guifg=#000000'
- let rout_color_date     = 'guifg=#000000'
- let rout_color_true     = 'guifg=#000000'
- let rout_color_false    = 'guifg=#000000'
- let rout_color_inf      = 'guifg=#000000'
- let rout_color_constant = 'guifg=#000000'
- let rout_color_string   = 'guifg=#000000'
- let rout_color_error    = 'guifg=#ffffff guibg=#c40000'
- let rout_color_warn     = 'guifg=#000000'
- let rout_color_index    = 'guifg=#000000'
+let rout_color_input    = 'guifg=#9f7315'
+let rout_color_normal   = 'guifg=#000000'
+let rout_color_number   = 'guifg=#9f7315'
+let rout_color_integer  = 'guifg=#9f7315'
+let rout_color_float    = 'guifg=#9f7315'
+let rout_color_complex  = 'guifg=#9f7315'
+let rout_color_negnum   = 'guifg=#9f7315'
+let rout_color_negfloat = 'guifg=#9f7315'
+let rout_color_date     = 'guifg=#9f7315'
+let rout_color_true     = 'guifg=#9f7315'
+let rout_color_false    = 'guifg=#9f7315'
+let rout_color_inf      = 'guifg=#9f7315'
+let rout_color_constant = 'guifg=#9f7315'
+let rout_color_string   = 'guifg=#9f7315'
+let rout_color_error    = 'guifg=#ffffff guibg=#c40000'
+let rout_color_warn     = 'guifg=#9f7315'
+let rout_color_index    = 'guifg=#9f7315'
 endif
 
 let g:slime_target = "tmux"
@@ -695,12 +705,15 @@ EOF
 let g:himalaya_mailbox_picker = 'telescope'
 let g:himalaya_telescope_preview_enabled = 0
 autocmd BufRead,BufNewFile,BufEnter * set nonumber
-autocmd BufRead,BufNewFile,BufEnter *.py source /home/tamas/.config/nvim/cocconfig
-autocmd BufRead,BufNewFile,BufEnter *.R source /home/tamas/.config/nvim/cocconfig
+" autocmd BufRead,BufNewFile,BufEnter *.py source /home/tamas/.config/nvim/cocconfig
+" autocmd BufRead,BufNewFile,BufEnter *.R source /home/tamas/.config/nvim/cocconfig
 
 
 """"" Lualine config """"""
 lua << END
+local status = require'nvim-spotify'.status
+
+status:start()
 require'lualine'.setup {
   options = {
     icons_enabled = true,
@@ -713,7 +726,7 @@ require'lualine'.setup {
   sections = {
     lualine_a = {'mode'},
     lualine_b = {'branch', 'diff',
-                  {'diagnostics', sources={'nvim_lsp', 'coc'}}},
+                  {'diagnostics', sources={'coc'}}},
     lualine_c = {'filename'},
     lualine_x = {'filetype'},
     lualine_y = {'progress'},
@@ -732,7 +745,7 @@ require'lualine'.setup {
       lualine_b = {'branch'},
       lualine_c = {'filename'},
       lualine_x = {},
-      lualine_y = {},
+      lualine_y = {status.listen},
       lualine_z = {'tabs'}
   },
   extensions = {}
@@ -789,3 +802,57 @@ inoremap <expr><S-TAB>  ddc#map#pum_visible() ? '<C-p>' : '<C-h>'
 
 " Use ddc.
 call ddc#enable()
+
+lua << EOF
+ local iron = require("iron")
+ iron.core.add_repl_definitions{
+   python = {
+     venv_python = {
+       -- Note that the command is a string and not a table.
+       -- This allows neovims job to find the correct binary throught the path.
+       command = "ipython3"
+     }
+   }
+ }
+ iron.core.set_config{preferred = {python = "venv_python"}}
+EOF
+
+" spotify key maps
+" vim.api.nvim_set_keymap("n", "<leader>sn", "<Plug>(SpotifySkip)", { silent = true }) -- Skip the current track
+" vim.api.nvim_set_keymap("n", "<leader>sp", "<Plug>(SpotifyPause)", { silent = true }) -- Pause/Resume the current track
+" vim.api.nvim_set_keymap("n", "<leader>ss", "<Plug>(SpotifySave)", { silent = true }) -- Add the current track to your library
+" vim.api.nvim_set_keymap("n", "<leader>so", ":Spotify<CR>", { silent = true }) -- Open Spotify Search window
+" vim.api.nvim_set_keymap("n", "<leader>sd", ":SpotifyDevices<CR>", { silent = true }) -- Open Spotify Devices window
+" vim.api.nvim_set_keymap("n", "<leader>sb", "<Plug>(SpotifyPrev)", { silent = true }) -- Go back to the previous track
+
+
+" Trigger configuration. You need to change this to something other than <tab> if you use one of the following:
+" - https://github.com/Valloric/YouCompleteMe
+" - https://github.com/nvim-lua/completion-nvim
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+
+let g:conoline_auto_enable = 1
+let g:conoline_use_colorscheme_default_normal=1
+let g:conoline_use_colorscheme_default_insert=1
+" set cursorline
+" hi cursorline cterm=none term=none
+" autocmd WinEnter * setlocal cursorline
+" autocmd WinLeave * setlocal nocursorline
+highlight CursorLine guibg=#303000 ctermbg=199
+
+set background=light
+" let R_app = "radian"
+" let R_cmd = "R"
+" let R_hl_term = 0
+" let R_args = []  " if you had set any
+" let R_bracketed_paste = 2
+
+set cursorline
+hi CursorLine term=bold cterm=bold guibg=#e4e0d2
+highlight Cursor guifg=white guibg=black
+highlight iCursor guifg=white guibg=black

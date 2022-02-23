@@ -201,7 +201,7 @@ Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
 "Plug 'carlitux/deoplete-ternjs'
 Plug 'roxma/vim-hug-neovim-rpc'
 " Plug 'dense-analysis/ale'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot' 
 Plug 'nikvdp/ejs-syntax'
 
@@ -238,7 +238,7 @@ let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
 " set runtimepath+=~/.config/nvim/bundle/deoplete.nvim/
 " let g:deoplete#enable_at_startup = 1
-let g:coc_node_path = '/usr/bin/node'
+" let g:coc_node_path = '/usr/bin/node'
 nmap <C-b> :TagbarToggle<CR>
 let g:tagbar_type_r = {
     \ 'ctagstype' : 'r',
@@ -334,10 +334,10 @@ function! s:VSetSearch(cmdtype)
     let @s = temp
 endfunction
 
-inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ coc#refresh()
+" inoremap <silent><expr> <TAB>
+"   \ pumvisible() ? "\<C-n>" :
+"   \ <SID>check_back_space() ? "\<TAB>" :
+"   \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
@@ -345,19 +345,19 @@ let col = col('.') - 1
 return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                          \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+"                           \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-function! s:show_documentation()
-if (index(['vim','help'], &filetype) >= 0)
-execute 'h '.expand('<cword>')
-elseif (coc#rpc#ready())
-call CocActionAsync('doHover')
-else
-execute '!' . &keywordprg . " " . expand('<cword>')
-endif
-endfunction
+" function! s:show_documentation()
+" if (index(['vim','help'], &filetype) >= 0)
+" execute 'h '.expand('<cword>')
+" elseif (coc#rpc#ready())
+" call CocActionAsync('doHover')
+" else
+" execute '!' . &keywordprg . " " . expand('<cword>')
+" endif
+" endfunction
 
 let g:gruvbox_contrast_light='soft'
 let g:gruvbox_contrast_dark='soft'
@@ -428,7 +428,8 @@ map <silent> <c-v> <Plug>(iron-visual-send)
 map <silent> <c-s> <Plug>(iron-send-line)
 map <A-x>  :IronReplHere<cr>
 autocmd FileType python imap <A-c> <Esc>:normal! a ->  <CR><Esc>i
-let g:pymode_lint_config = '$HOME/pylint.rc'
+let g:pymode_lint_config = '$HOME/.pylint.rc'
+let g:pymode_lint_cwindow=0
 
 
 " let g:jupyter_mapkeys = 0
@@ -486,7 +487,7 @@ let g:tern#arguments = [" — persistent"]
 let g:ale_fix_on_save = 1
 set nobackup
 set nowritebackup
-inoremap <silent><expr> <c-z> coc#refresh()
+" inoremap <silent><expr> <c-z> coc#refresh()
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 function! s:show_documentation()
 if (index(['vim','help'], &filetype) >= 0)
@@ -712,6 +713,11 @@ autocmd BufRead,BufNewFile,BufEnter * set nonumber
 """"" Lualine config """"""
 lua << END
 local status = require'nvim-spotify'.status
+local function hello()
+  local var = "Python3.x Virtual Enviroment: " .. os.getenv("PE")
+  return var
+
+end
 
 status:start()
 require'lualine'.setup {
@@ -741,7 +747,7 @@ require'lualine'.setup {
     lualine_z = {}
   },
   tabline = {
-      lualine_a = {'buffers'},
+      lualine_a = {hello},
       lualine_b = {'branch'},
       lualine_c = {'filename'},
       lualine_x = {},

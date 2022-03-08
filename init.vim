@@ -530,6 +530,9 @@ vmap <C-z> <Plug>RSendSelection
 autocmd FileType r inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
 autocmd FileType rnoweb inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
 autocmd FileType rmd inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
+" autocmd FileType r inoremap <buffer> > <Esc>:normal! a |> <CR>a 
+" autocmd FileType rnoweb inoremap <buffer> > <Esc>:normal! a |> <CR>a 
+" autocmd FileType rmd inoremap <buffer> > <Esc>:normal! a |><CR>a 
 
 " autocmd FileType Rmd imap <C-n> <Esc>:normal! a %>%  <CR><Esc>o
 " autocmd FileType Rmd imap <A-n> <Esc>:normal! a <-  <CR><Esc>i
@@ -713,10 +716,9 @@ autocmd BufRead,BufNewFile,BufEnter * set nonumber
 """"" Lualine config """"""
 lua << END
 local status = require'nvim-spotify'.status
-local function hello()
-  local var = "Python3.x Virtual Enviroment: " .. os.getenv("PE")
+local function pyenv()
+  local var = "Python 3.x Virtual Environment: " .. os.getenv("PE")
   return var
-
 end
 
 status:start()
@@ -747,7 +749,7 @@ require'lualine'.setup {
     lualine_z = {}
   },
   tabline = {
-      lualine_a = {hello},
+      lualine_a = {pyenv},
       lualine_b = {'branch'},
       lualine_c = {'filename'},
       lualine_x = {},
@@ -862,3 +864,5 @@ set cursorline
 hi CursorLine term=bold cterm=bold guibg=#e4e0d2
 highlight Cursor guifg=white guibg=black
 highlight iCursor guifg=white guibg=black
+" hi! Normal ctermbg=NONE guibg=NONE
+" hi! NonText ctermbg=NONE guibg=NONE

@@ -201,7 +201,7 @@ Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
 "Plug 'carlitux/deoplete-ternjs'
 Plug 'roxma/vim-hug-neovim-rpc'
 " Plug 'dense-analysis/ale'
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot' 
 Plug 'nikvdp/ejs-syntax'
 
@@ -715,6 +715,7 @@ autocmd BufRead,BufNewFile,BufEnter * set nonumber
 
 """"" Lualine config """"""
 lua << END
+local get_color = require'lualine.utils.utils'.extract_highlight_colors
 local status = require'nvim-spotify'.status
 local function pyenv()
   local var = "Python 3.x Virtual Environment: " .. os.getenv("PE")
@@ -733,9 +734,8 @@ require'lualine'.setup {
   },
   sections = {
     lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff',
-                  {'diagnostics', sources={'coc'}}},
-    lualine_c = {'filename'},
+    lualine_b = {'branch'},
+    lualine_c = {{'diagnostics', colored=false}},
     lualine_x = {'filetype'},
     lualine_y = {'progress'},
     lualine_z = {'location'}
@@ -861,8 +861,14 @@ set background=light
 " let R_bracketed_paste = 2
 
 set cursorline
-hi CursorLine term=bold cterm=bold guibg=#e4e0d2
+hi CursorLine term=bold cterm=bold guibg=#ffaf00
+" hi iCursorLine term=bold cterm=bold guibg=#e4e4e4
 highlight Cursor guifg=white guibg=black
 highlight iCursor guifg=white guibg=black
 " hi! Normal ctermbg=NONE guibg=NONE
 " hi! NonText ctermbg=NONE guibg=NONE
+"
+let g:denops#deno='/var/home/tamas/.deno/bin/deno'
+
+" which linter to enable for Python source file linting
+let g:neomake_python_enabled_makers = ['pylint']

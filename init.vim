@@ -43,8 +43,8 @@ Plug 'nvim-lualine/lualine.nvim'
 " If you want to have icons in your statusline choose one of these
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'dylanaraps/pascal_lint.nvim'
-Plug 'Shougo/ddc.vim'
-Plug 'vim-denops/denops.vim'
+"Plug 'Shougo/ddc.vim'
+"Plug 'vim-denops/denops.vim'
 Plug 'KadoBOT/nvim-spotify', { 'do': 'make' }
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -232,13 +232,13 @@ nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 
 
 
-let g:ale_completion_enabled = 1
-let g:ale_sign_column_always = 1
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '--'
+" let g:ale_completion_enabled = 1
+" let g:ale_sign_column_always = 1
+" let g:ale_sign_error = '>>'
+" let g:ale_sign_warning = '--'
 " set runtimepath+=~/.config/nvim/bundle/deoplete.nvim/
 " let g:deoplete#enable_at_startup = 1
-" let g:coc_node_path = '/usr/bin/node'
+let g:coc_node_path = '/usr/bin/node'
 nmap <C-b> :TagbarToggle<CR>
 let g:tagbar_type_r = {
     \ 'ctagstype' : 'r',
@@ -334,10 +334,10 @@ function! s:VSetSearch(cmdtype)
     let @s = temp
 endfunction
 
-" inoremap <silent><expr> <TAB>
-"   \ pumvisible() ? "\<C-n>" :
-"   \ <SID>check_back_space() ? "\<TAB>" :
-"   \ coc#refresh()
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
@@ -345,8 +345,8 @@ let col = col('.') - 1
 return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-" inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-"                           \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                          \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 " function! s:show_documentation()
@@ -487,7 +487,7 @@ let g:tern#arguments = [" — persistent"]
 let g:ale_fix_on_save = 1
 set nobackup
 set nowritebackup
-" inoremap <silent><expr> <c-z> coc#refresh()
+inoremap <silent><expr> <c-z> coc#refresh()
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 function! s:show_documentation()
 if (index(['vim','help'], &filetype) >= 0)
@@ -697,7 +697,7 @@ require'nvim-treesitter.configs'.setup {
     indicator_size = 300,
     type_patterns = {'function', 'method', 'indicator'},
     transform_fn = function(line) return line:gsub('%s*[%[%(%{]*%s*$', '') end,
-    separator = '>>'
+    separator = '>'
   }
 }
 EOF
@@ -718,7 +718,7 @@ lua << END
 local get_color = require'lualine.utils.utils'.extract_highlight_colors
 local status = require'nvim-spotify'.status
 local function pyenv()
-  local var = "Python 3.x Virtual Environment: " .. os.getenv("PE")
+  local var = "venv: " .. os.getenv("PE")
   return var
 end
 
@@ -769,47 +769,47 @@ END
 " Customize global settings
 " Use around source.
 " https://github.com/Shougo/ddc-around
-call ddc#custom#patch_global('sources', ['around'])
+" call ddc#custom#patch_global('sources', ['around'])
 
 " Use matcher_head and sorter_rank.
 " https://github.com/Shougo/ddc-matcher_head
 " https://github.com/Shougo/ddc-sorter_rank
-call ddc#custom#patch_global('sourceOptions', {
-      \ '_': {
-      \   'matchers': ['matcher_head'],
-      \   'sorters': ['sorter_rank']},
-      \ })
+" call ddc#custom#patch_global('sourceOptions', {
+"       \ '_': {
+"       \   'matchers': ['matcher_head'],
+"       \   'sorters': ['sorter_rank']},
+"       \ })
 
 " Change source options
-call ddc#custom#patch_global('sourceOptions', {
-      \ 'around': {'mark': 'A'},
-      \ })
-call ddc#custom#patch_global('sourceParams', {
-      \ 'around': {'maxSize': 500},
-      \ })
+" call ddc#custom#patch_global('sourceOptions', {
+"       \ 'around': {'mark': 'A'},
+"       \ })
+" call ddc#custom#patch_global('sourceParams', {
+"       \ 'around': {'maxSize': 500},
+"       \ })
 
 " Customize settings on a filetype
-call ddc#custom#patch_filetype(['c', 'cpp'], 'sources', ['around', 'clangd'])
-call ddc#custom#patch_filetype(['c', 'cpp'], 'sourceOptions', {
-      \ 'clangd': {'mark': 'C'},
-      \ })
-call ddc#custom#patch_filetype('markdown', 'sourceParams', {
-      \ 'around': {'maxSize': 100},
-      \ })
+" call ddc#custom#patch_filetype(['c', 'cpp'], 'sources', ['around', 'clangd'])
+" call ddc#custom#patch_filetype(['c', 'cpp'], 'sourceOptions', {
+"       \ 'clangd': {'mark': 'C'},
+"       \ })
+" call ddc#custom#patch_filetype('markdown', 'sourceParams', {
+"       \ 'around': {'maxSize': 100},
+"       \ })
 
 " Mappings
 
 " <TAB>: completion.
-inoremap <silent><expr> <TAB>
-\ ddc#map#pum_visible() ? '<C-n>' :
-\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
-\ '<TAB>' : ddc#map#manual_complete()
+" inoremap <silent><expr> <TAB>
+" \ ddc#map#pum_visible() ? '<C-n>' :
+" \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+" \ '<TAB>' : ddc#map#manual_complete()
 
 " <S-TAB>: completion back.
-inoremap <expr><S-TAB>  ddc#map#pum_visible() ? '<C-p>' : '<C-h>'
+" inoremap <expr><S-TAB>  ddc#map#pum_visible() ? '<C-p>' : '<C-h>'
 
 " Use ddc.
-call ddc#enable()
+" call ddc#enable()
 
 lua << EOF
  local iron = require("iron")
@@ -872,3 +872,13 @@ let g:denops#deno='/var/home/tamas/.deno/bin/deno'
 
 " which linter to enable for Python source file linting
 let g:neomake_python_enabled_makers = ['pylint']
+
+
+" COC colours
+highlight CocErrorSign ctermfg=black  guifg=#af611c
+highlight CocWarningSign ctermfg=black  guifg=#af611c
+highlight CocHintSign ctermfg=black  guifg=#af611c
+highlight DiagnosticError ctermfg=black  guifg=#af611c
+highlight DiagnosticWarning ctermfg=black  guifg=#af611c
+highlight CocInfoSign ctermfg=black  guifg=#af611c
+highlight CocFloating ctermfg=black  guifg=white guibg=#B0A99B

@@ -50,7 +50,10 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'fatih/vim-go'
 Plug 'miyakogi/conoline.vim'
-Plug 'ms-jpq/coq_nvim'
+
+" Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+" Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
+" Plug 'ms-jpq/coq.thirdparty', {'branch': '3p'}
 
 Plug 'nvim-lua/plenary.nvim'
 Plug 'folke/todo-comments.nvim'
@@ -107,6 +110,7 @@ Plug 'EdenEast/nightfox.nvim'
 Plug 'sainnhe/sonokai'
 Plug 'savq/melange'
 Plug 'rebelot/kanagawa.nvim'
+Plug 'adigitoleo/vim-mellow', { 'tag': '*' }
 
 """""""""""""""""""""""""""""""""""""""
 """"""""Light config           """"""""
@@ -206,9 +210,10 @@ Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' }
 "Plug 'carlitux/deoplete-ternjs'
 Plug 'roxma/vim-hug-neovim-rpc'
 " Plug 'dense-analysis/ale'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot' 
 Plug 'nikvdp/ejs-syntax'
+
 
 """"""""""""""""""""""""""""""""""""""
 """ Fuzzy search""""""""""""""""""""""
@@ -239,11 +244,11 @@ nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 
 " let g:ale_completion_enabled = 1
 " let g:ale_sign_column_always = 1
-" let g:ale_sign_error = '>>'
+" let g:ale_sign_error = ''
 " let g:ale_sign_warning = '--'
 " set runtimepath+=~/.config/nvim/bundle/deoplete.nvim/
 " let g:deoplete#enable_at_startup = 1
-let g:coc_node_path = '/usr/bin/node'
+" let g:coc_node_path = '~/.nvm/versions/node/v18.7.0/bin/node'
 nmap <C-b> :TagbarToggle<CR>
 let g:tagbar_type_r = {
     \ 'ctagstype' : 'r',
@@ -339,19 +344,19 @@ function! s:VSetSearch(cmdtype)
     let @s = temp
 endfunction
 
-inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" inoremap <silent><expr> <TAB>
+"   \ pumvisible() ? "\<C-n>" :
+"   \ <SID>check_back_space() ? "\<TAB>" :
+"   \ coc#refresh()
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
 let col = col('.') - 1
 return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                          \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+"                           \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 " function! s:show_documentation()
@@ -373,7 +378,7 @@ let g:everforest_disable_italic_comment = 1
 let g:everforest_diagnostic_text_highlight = 1
 let g:everforest_diagnostic_line_highlight = 0
 let g:everforest_diagnostic_virtual_text = 'colored'
-colorscheme paper
+colorscheme mellow
 syntax enable
 set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175
 " let g:airline_theme='everforest'
@@ -494,7 +499,7 @@ let g:tern#arguments = [" — persistent"]
 let g:ale_fix_on_save = 1
 set nobackup
 set nowritebackup
-inoremap <silent><expr> <c-z> coc#refresh()
+" inoremap <silent><expr> <c-z> coc#refresh()
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 function! s:show_documentation()
 if (index(['vim','help'], &filetype) >= 0)
@@ -534,9 +539,9 @@ vmap <C-z> <Plug>RSendSelection
 " autocmd FileType rmd inoremap <C-S-m> > <Esc>:normal! a %>%<CR>a i
 " autocmd FileType r imap <C-n> <Esc>:normal! a %>%  <CR><Esc>o
 " autocmd FileType r imap <A-n> <Esc>:normal! a <-  <CR><Esc>i
-autocmd FileType r inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
-autocmd FileType rnoweb inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
-autocmd FileType rmd inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
+" autocmd FileType r inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
+" autocmd FileType rnoweb inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
+" autocmd FileType rmd inoremap <buffer> > <Esc>:normal! a %>%<CR>a 
 " autocmd FileType r inoremap <buffer> > <Esc>:normal! a |> <CR>a 
 " autocmd FileType rnoweb inoremap <buffer> > <Esc>:normal! a |> <CR>a 
 " autocmd FileType rmd inoremap <buffer> > <Esc>:normal! a |><CR>a 
@@ -733,6 +738,7 @@ status:start()
 require'lualine'.setup {
   options = {
     icons_enabled = true,
+    dimInactive = true,
     theme = 'auto',
     component_separators = { left = '', right = ''},
     section_separators = { left = '', right = ''},
@@ -837,7 +843,7 @@ lua << EOF
 local iron = require("iron.core")
 iron.setup {
   config = {
-    scope = require("iron.scope").path_based,
+   -- scope = require("iron.scope").path_based,
     should_map_plug = false,
     scratch_repl = true,
     repl_definition = {
@@ -896,7 +902,7 @@ let R_args = []  " if you had set any
 let R_bracketed_paste = 2
 
 set cursorline
-hi CursorLine term=bold cterm=bold guibg=#ffaf00
+hi CursorLine term=bold cterm=bold guibg=#e0ccae
 " hi iCursorLine term=bold cterm=bold guibg=#e4e4e4
 highlight Cursor guifg=white guibg=black
 highlight iCursor guifg=white guibg=black
@@ -987,9 +993,9 @@ lua << EOF
     },
     TODO = { icon = " ", color = "info" },
     HACK = { icon = " ", color = "warning" },
-    WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+    WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX", "CC" } },
     PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-    NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+    NOTE = { icon = " ", color = "hint", alt = { "INFO" ,">>"} },
   },
   merge_keywords = true, -- when true, custom keywords will be merged with the defaults
   -- highlighting of the line containing the todo comment
@@ -1031,4 +1037,40 @@ lua << EOF
 }
   }
 EOF
+" let g:coq_settings = { 'auto_start': 'shut-up' }
+set mouse=
+lua << EOF
+    require('kanagawa').setup({
+        undercurl = true,           -- enable undercurls
+        commentStyle = { italic = true },
+        functionStyle = {},
+        keywordStyle = { italic = true},
+        statementStyle = { bold = true },
+        typeStyle = {},
+        variablebuiltinStyle = { italic = true},
+        specialReturn = true,       -- special highlight for the return keyword
+        specialException = true,    -- special highlight for exception handling keywords
+        transparent = false,        -- do not set background color
+        dimInactive = false,        -- dim inactive window `:h hl-NormalNC`
+        globalStatus = false,       -- adjust window separators highlight for laststatus=3
+        terminalColors = true,      -- define vim.g.terminal_color_{0,17}
+        colors = {},
+        overrides = {},
+        theme = "dark"           -- Load "default" theme or the experimental "light" theme
+    })
 
+    -- setup must be called before loading
+    --vim.cmd("colorscheme kanagawa")
+    vim.opt.laststatus = 3
+    vim.opt.fillchars:append({
+        horiz = '━',
+        horizup = '┻',
+        horizdown = '┳',
+        vert = '┃',
+        vertleft = '┨',
+        vertright = '┣',
+        verthoriz = '╋',
+    })
+    require'kanagawa'.setup({ globalStatus = true, ... })
+    --vim.cmd("colorscheme kanagawa")
+EOF

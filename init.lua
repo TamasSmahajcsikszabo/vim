@@ -34,7 +34,7 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 local lspconfig = require('lspconfig')
 
-local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver' }
+local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'dockerls', 'r_language_server' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     -- on_attach = my_custom_on_attach,
@@ -103,9 +103,9 @@ opt.expandtab=true
 opt.mouse =
 
 -- python setup
-g.syntastic_python_python_exec = '/usr/bin/python'
-g.nvim_ipy_perform_mappings = 0
-g.python3_host_prog = '/usr/bin/python'
+-- g.syntastic_python_python_exec = '/usr/bin/python'
+-- g.nvim_ipy_perform_mappings = 0
+-- g.python3_host_prog = '/usr/bin/python'
 
 cmd[[colorscheme mellow]]
 cmd[[autocmd StdinReadPre * let s:std_in=1]]
@@ -338,3 +338,5 @@ map('n', '<Leader>q', ':source ~/.config/nvim/init.lua<CR>')
 map('n', '<A-x>', ':IronReplHere<CR>')
 map('t', 'Esc', "<C-\\\\><C-n>")
 
+cmd[[set modifiable]]
+cmd[[set ma]]

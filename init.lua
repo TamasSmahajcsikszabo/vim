@@ -40,13 +40,8 @@ require('packer').startup(function()
   use 'vim-pandoc/vim-rmarkdown' 
   use 'ryanoasis/vim-devicons'
 end)
-function map(mode, lhs, rhs, opts)
-    local options = { noremap = true }
-    if opts then
-        options = vim.tbl_extend("force", options, opts)
-    end
-    vim.api.nvim_set_keymap(mode, lhs, rhs, options)
-end
+
+
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 local lspconfig = require('lspconfig')
@@ -371,6 +366,12 @@ map('n', '<C-b>', ':TagbarToggle<CR>')
 map('n', '<Leader>q', ':source ~/.config/nvim/init.lua<CR>')
 map('n', '<A-x>', ':IronReplHere<CR>')
 map('t', 'Esc', "<C-\\\\><C-n>")
+map('n', '<A-m-m>', ':RMarkdown! pdf latex_engine="xelatex"<CR>')
+map('i', '<A-m-m>', ':RMarkdown! pdf latex_engine="xelatex"<CR>')
+map('v', '<A-m-m>', ':RMarkdown! pdf latex_engine="xelatex"<CR>')
+map('n', '<C-Space>', '<Plug>RSendLine<CR>')
+map('v', '<C-Space>', '<Plug>RSendLine<CR>')
+map('i', '<C-Space>', '<Plug>RSendLine<CR>')
 
 cmd[[set modifiable]]
 cmd[[set ma]]

@@ -27,14 +27,31 @@ require('packer').startup(function()
   use 'tpope/vim-commentary'
   use 'folke/lsp-colors.nvim'
   use 'hkupty/iron.nvim'
+  use 'jalvesaq/Nvim-R'
+  use 'ncm2/ncm2'
+  use 'roxma/nvim-yarp'
+  use 'ncm2/ncm2-path'
+  use 'gaalcaras/ncm-R'
+  use 'roxma/vim-hug-neovim-rpc'
+  use 'jalvesaq/R-Vim-runtime'
+  use 'lervag/vimtex'
+  use 'vim-pandoc/vim-pandoc'
+  use 'vim-pandoc/vim-pandoc-syntax'
+  use 'vim-pandoc/vim-rmarkdown' 
   use 'ryanoasis/vim-devicons'
 end)
-
+function map(mode, lhs, rhs, opts)
+    local options = { noremap = true }
+    if opts then
+        options = vim.tbl_extend("force", options, opts)
+    end
+    vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+end
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 local lspconfig = require('lspconfig')
 
-local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'dockerls', 'r_language_server' }
+local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'dockerls', 'r_language_server', 'bashls' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     -- on_attach = my_custom_on_attach,
@@ -88,6 +105,7 @@ local g = vim.g
 local opt = vim.opt
 
 vim.o.guicursor="n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175"
+
 -- terminal-mode exit
 vim.api.nvim_exec([[tnoremap <Esc> <C-\><C-n>]],false)
 
@@ -102,6 +120,7 @@ opt.softtabstop=4
 opt.expandtab=true
 opt.mouse =
 
+
 -- python setup
 -- g.syntastic_python_python_exec = '/usr/bin/python'
 -- g.nvim_ipy_perform_mappings = 0
@@ -111,6 +130,20 @@ cmd[[colorscheme mellow]]
 cmd[[autocmd StdinReadPre * let s:std_in=1]]
 cmd[[autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif]]
 cmd[[autocmd BufRead,BufNewFile,BufEnter * set nonumber]]
+
+
+-- R settings
+g.R_app = 'radian'
+g.R_cmd = 'R'
+g.R_hl_term = 0
+g.R_bracketed_paste=2
+map("n", "<C-Space>", "<Plug>RSendLine")
+map("i", "<C-Space>", "<Plug>RSendLine")
+map("v", "<C-Space>", "<Plug>RSendLine")
+
+map("n", "<C-z>", "<Plug>RSendSelection")
+map("i", "<C-z>", "<Plug>RSendSelection")
+map("v", "<C-z>", "<Plug>RSendSelection")
 
 -- treesitter configs
 require'nvim-treesitter.configs'.setup {
@@ -128,7 +161,8 @@ require'nvim-treesitter.configs'.setup {
         }
     },
       indent = {
-        enable = true
+        enable = true,
+        disable = { "python" }
       },
       statusline = {
         indicator_size = 300,

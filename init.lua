@@ -18,7 +18,6 @@ require('packer').startup(function()
   use 'nvim-telescope/telescope.nvim'
   use 'nvim-lualine/lualine.nvim' 
   use 'kyazdani42/nvim-web-devicons'
-  use 'rebelot/kanagawa.nvim'
   use 'folke/trouble.nvim'
   use 'majutsushi/tagbar'
   use 'tpope/vim-unimpaired'
@@ -39,8 +38,27 @@ require('packer').startup(function()
   use 'vim-pandoc/vim-pandoc-syntax'
   use 'vim-pandoc/vim-rmarkdown' 
   use 'ryanoasis/vim-devicons'
+  use 'EdenEast/nightfox.nvim'
+  use 'sainnhe/everforest'
+  use 'jose-elias-alvarez/null-ls.nvim'
+  use 'MunifTanjim/prettier.nvim'
+  use 'yorickpeterse/vim-paper'
+  use 'gilgigilgil/anderson.vim'
+  use 'morhetz/gruvbox'
+  use 'folke/tokyonight.nvim'
+  use 'rebelot/kanagawa.nvim'
 end)
 
+local cmd = vim.cmd
+local fn = vim.fn
+local g = vim.g
+local opt = vim.opt
+
+local function map(mode, lhs, rhs, opts)
+  local options = {noremap = true}
+  if opts then options = vim.tbl_extend('force', options, opts) end
+  vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
@@ -53,8 +71,88 @@ for _, lsp in ipairs(servers) do
     capabilities = capabilities,
   }
 end
+
+
+-- typescript settings/javascript/prettier
+local null_ls = require("null-ls")
+
+local group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false })
+local event = "BufWritePre" -- or "BufWritePost"
+local async = event == "BufWritePost"
+
+null_ls.setup({
+  on_attach = function(client, bufnr)
+    if client.supports_method("textDocument/formatting") then
+      vim.keymap.set("n", "<Leader>f", function()
+        vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+      end, { buffer = bufnr, desc = "[lsp] format" })
+
+      -- format on save
+      vim.api.nvim_clear_autocmds({ buffer = bufnr, group = group })
+      vim.api.nvim_create_autocmd(event, {
+        buffer = bufnr,
+        group = group,
+        callback = function()
+          vim.lsp.buf.format({ bufnr = bufnr, async = async })
+        end,
+        desc = "[lsp] format on save",
+      })
+    end
+
+    if client.supports_method("textDocument/rangeFormatting") then
+      vim.keymap.set("x", "<Leader>f", function()
+        vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+      end, { buffer = bufnr, desc = "[lsp] format" })
+    end
+  end,
+})
+
+local prettier = require("prettier")
+
+prettier.setup({
+  bin = 'prettier', -- or `'prettierd'` (v0.22+)
+  filetypes = {
+    "css",
+    "graphql",
+    "html",
+    "javascript",
+    "javascriptreact",
+    "json",
+    "less",
+    "markdown",
+    "scss",
+    "typescript",
+    "typescriptreact",
+    "yaml",
+  },
+})
+
+prettier.setup({
+  cli_options = {
+    arrow_parens = "always",
+    bracket_spacing = true,
+    bracket_same_line = false,
+    embedded_language_formatting = "auto",
+    end_of_line = "lf",
+    html_whitespace_sensitivity = "css",
+    -- jsx_bracket_same_line = false,
+    jsx_single_quote = false,
+    print_width = 80,
+    prose_wrap = "preserve",
+    quote_props = "as-needed",
+    semi = true,
+    single_attribute_per_line = false,
+    single_quote = false,
+    tab_width = 2,
+    trailing_comma = "es5",
+    use_tabs = false,
+    vue_indent_script_and_style = false,
+  },
+})
+
 local luasnip = require 'luasnip'
 local cmp = require 'cmp'
+
 cmp.setup {
   snippet = {
     expand = function(args)
@@ -94,10 +192,6 @@ cmp.setup {
   },
 }
 
-local cmd = vim.cmd
-local fn = vim.fn
-local g = vim.g
-local opt = vim.opt
 
 vim.o.guicursor="n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175"
 
@@ -121,7 +215,6 @@ opt.mouse =
 -- g.nvim_ipy_perform_mappings = 0
 -- g.python3_host_prog = '/usr/bin/python'
 
-cmd[[colorscheme mellow]]
 cmd[[autocmd StdinReadPre * let s:std_in=1]]
 cmd[[autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif]]
 cmd[[autocmd BufRead,BufNewFile,BufEnter * set nonumber]]
@@ -211,28 +304,17 @@ require'lualine'.setup {
   }
 }
 
---kanagawa configs
-require('kanagawa').setup({
-    undercurl = true,           
-    commentStyle = { italic = true },
-    functionStyle = {},
-    keywordStyle = { italic = true},
-    statementStyle = { bold = true },
-    typeStyle = {},
-    variablebuiltinStyle = { italic = true},
-    specialReturn = true,       -- special highlight for the return keyword
-    specialException = true,    -- special highlight for exception handling keywords
-    transparent = false,        -- do not set background color
-    dimInactive = false,        -- dim inactive window `:h hl-NormalNC`
-    globalStatus = false,       -- adjust window separators highlight for laststatus=3
-    terminalColors = true,      -- define vim.g.terminal_color_{0,17}
-    colors = {},
-    overrides = {},
-    theme = "dark"           -- Load "default" theme or the experimental "light" theme
-})
+--eveforest config
+g.everforest_background='soft'
+g.everforest_ui_contrast = 'low'
+
 
 -- setup must be called before loading
---vim.cmd("colorscheme kanagawa")
+currentHour = os.date('%H', os.time())
+local colorCommand="colorscheme mellow"
+if tonumber(currentHour) >= 22 then colorCommand = "colorscheme kanagawa-dragon" end
+
+vim.cmd(colorCommand)
 opt.laststatus = 3
 opt.fillchars:append({
     horiz = '━',
@@ -243,7 +325,6 @@ opt.fillchars:append({
     vertright = '┣',
     verthoriz = '╋',
 })
-require'kanagawa'.setup({ globalStatus = true, ... })
 
 -- trouble config
 require("trouble").setup {
@@ -331,6 +412,7 @@ iron.setup {
 }
 
 
+
 --lsp colors
 local lsp_color = "#a6a2a2"
 require("lsp-colors").setup({
@@ -343,14 +425,6 @@ vim.cmd[[highlight DiagnosticHint ctermfg=5 guifg=#a6a2a2]]
 vim.cmd[[highlight DiagnosticError ctermfg=5 guifg=#9b0000]]
 vim.cmd[[highlight DiagnosticWarn ctermfg=5 guifg=#a6a2a2]]
 vim.cmd[[highlight DiagnosticInfo ctermfg=5 guifg=#a6a2a2]]
-
-
-local function map(mode, lhs, rhs, opts)
-  local options = {noremap = true}
-  if opts then options = vim.tbl_extend('force', options, opts) end
-  vim.api.nvim_set_keymap(mode, lhs, rhs, options)
-end
-
 
 -- mappings
 map('n','<C-t>', ':NERDTreeToggle<CR>')
@@ -375,3 +449,6 @@ map('i', '<C-Space>', '<Plug>RSendLine<CR>')
 
 cmd[[set modifiable]]
 cmd[[set ma]]
+-- cmd[[colorscheme tokyonight-day]]
+cmd[[highlight Cursor guifg=white guibg=#604ac3]]
+cmd[[set cursorline]]

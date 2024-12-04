@@ -47,12 +47,17 @@ require('packer').startup(function()
   use 'morhetz/gruvbox'
   use 'folke/tokyonight.nvim'
   use 'rebelot/kanagawa.nvim'
-end)
+  use 'lewis6991/hover.nvim'
+  end)
+
 
 local cmd = vim.cmd
 local fn = vim.fn
 local g = vim.g
 local opt = vim.opt
+
+-- allow mouse for hover
+opt.mouse = 'a'
 
 local function map(mode, lhs, rhs, opts)
   local options = {noremap = true}
@@ -73,6 +78,33 @@ for _, lsp in ipairs(servers) do
 end
 
 
+vim.keymap.set('n', '<MouseMove>', require('hover').hover_mouse, { desc = "hover.nvim (mouse)" })
+vim.o.mousemoveevent = true
+require("hover").setup {
+            init = function()
+                -- Require providers
+                require("hover.providers.lsp")
+                require('hover.providers.gh')
+                require('hover.providers.gh_user')
+                require('hover.providers.jira')
+                require('hover.providers.dap')
+                require('hover.providers.fold_preview')
+                require('hover.providers.diagnostic')
+                require('hover.providers.man')
+                require('hover.providers.dictionary')
+            end,
+            preview_opts = {
+                border = 'single'
+            },
+            -- Whether the contents of a currently open hover window should be moved
+            -- to a :h preview-window when pressing the hover keymap.
+            preview_window = true,
+            title = true,
+            mouse_providers = {
+                'LSP'
+            },
+            mouse_delay = 100
+        }
 -- typescript settings/javascript/prettier
 local null_ls = require("null-ls")
 
@@ -207,7 +239,6 @@ opt.tabstop=4
 opt.shiftwidth=4
 opt.softtabstop=4
 opt.expandtab=true
-opt.mouse =
 
 
 -- python setup
@@ -311,7 +342,7 @@ g.everforest_ui_contrast = 'low'
 
 -- setup must be called before loading
 currentHour = os.date('%H', os.time())
-local colorCommand="colorscheme mellow"
+local colorCommand="colorscheme dayfox"
 if tonumber(currentHour) >= 22 then colorCommand = "colorscheme kanagawa-dragon" end
 
 vim.cmd(colorCommand)

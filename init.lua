@@ -26,7 +26,6 @@ require('packer').startup(function()
   use 'tpope/vim-commentary'
   use 'folke/lsp-colors.nvim'
   use 'hkupty/iron.nvim'
-  use 'jalvesaq/Nvim-R'
   use 'ncm2/ncm2'
   use 'roxma/nvim-yarp'
   use 'ncm2/ncm2-path'
@@ -48,6 +47,8 @@ require('packer').startup(function()
   use 'folke/tokyonight.nvim'
   use 'rebelot/kanagawa.nvim'
   use 'lewis6991/hover.nvim'
+  use 'R-nvim/R.nvim'
+  use 'R-nvim/cmp-r'
   end)
 
 
@@ -58,6 +59,7 @@ local opt = vim.opt
 
 -- allow mouse for hover
 opt.mouse = 'a'
+g.python3_host_prog='/usr/bin/python3.11'
 
 local function map(mode, lhs, rhs, opts)
   local options = {noremap = true}
@@ -76,7 +78,6 @@ for _, lsp in ipairs(servers) do
     capabilities = capabilities,
   }
 end
-
 
 vim.keymap.set('n', '<MouseMove>', require('hover').hover_mouse, { desc = "hover.nvim (mouse)" })
 vim.o.mousemoveevent = true
@@ -103,7 +104,7 @@ require("hover").setup {
             mouse_providers = {
                 'LSP'
             },
-            mouse_delay = 100
+            mouse_delay = 50
         }
 -- typescript settings/javascript/prettier
 local null_ls = require("null-ls")
@@ -251,11 +252,13 @@ cmd[[autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 cmd[[autocmd BufRead,BufNewFile,BufEnter * set nonumber]]
 
 
--- R settings
-g.R_app = 'radian'
-g.R_cmd = 'R'
+-- R setting --
+g.R_app = "~/.local/bin/radian"
+g.R_cmd = "R"
 g.R_hl_term = 0
-g.R_bracketed_paste=2
+g.R_args = {}
+g.R_bracketed_paste = 1
+
 map("n", "<C-Space>", "<Plug>RSendLine")
 map("i", "<C-Space>", "<Plug>RSendLine")
 map("v", "<C-Space>", "<Plug>RSendLine")
@@ -442,7 +445,8 @@ iron.setup {
   }
 }
 
-
+--python-mode condfig
+g.pymode_lint_checkers = {'pyflakes', 'pycodestyle'}
 
 --lsp colors
 local lsp_color = "#a6a2a2"
@@ -483,3 +487,11 @@ cmd[[set ma]]
 -- cmd[[colorscheme tokyonight-day]]
 cmd[[highlight Cursor guifg=white guibg=#604ac3]]
 cmd[[set cursorline]]
+
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+
+vim.opt.swapfile = false

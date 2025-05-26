@@ -16,16 +16,15 @@ require('packer').startup(function()
   use 'nvim-lua/popup.nvim'
   use 'nvim-lua/plenary.nvim'
   use 'nvim-telescope/telescope.nvim'
-  use 'nvim-lualine/lualine.nvim' 
+  use 'nvim-lualine/lualine.nvim'
   use 'kyazdani42/nvim-web-devicons'
   use 'folke/trouble.nvim'
   use 'majutsushi/tagbar'
-  use 'tpope/vim-unimpaired'
+  -- use 'tpope/vim-unimpaired'
   use 'tpope/vim-surround'
-  use 'jiangmiao/auto-pairs'
   use 'tpope/vim-commentary'
   use 'folke/lsp-colors.nvim'
-  use 'hkupty/iron.nvim'
+  use 'jalvesaq/Nvim-R'
   use 'ncm2/ncm2'
   use 'roxma/nvim-yarp'
   use 'ncm2/ncm2-path'
@@ -35,7 +34,7 @@ require('packer').startup(function()
   use 'lervag/vimtex'
   use 'vim-pandoc/vim-pandoc'
   use 'vim-pandoc/vim-pandoc-syntax'
-  use 'vim-pandoc/vim-rmarkdown' 
+  use 'vim-pandoc/vim-rmarkdown'
   use 'ryanoasis/vim-devicons'
   use 'EdenEast/nightfox.nvim'
   use 'sainnhe/everforest'
@@ -49,6 +48,8 @@ require('packer').startup(function()
   use 'lewis6991/hover.nvim'
   use 'R-nvim/R.nvim'
   use 'R-nvim/cmp-r'
+  use 'Vigemus/iron.nvim'
+  use 'goerz/jupytext.nvim'
   end)
 
 
@@ -56,6 +57,10 @@ local cmd = vim.cmd
 local fn = vim.fn
 local g = vim.g
 local opt = vim.opt
+
+-- global provider setup
+g.python3_host_prog = '/opt/homebrew/bin/python3'
+
 
 -- allow mouse for hover
 opt.mouse = 'a'
@@ -71,7 +76,7 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 local lspconfig = require('lspconfig')
 
-local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'dockerls', 'r_language_server', 'bashls' }
+local servers = { 'clangd', 'rust_analyzer', 'pyright', 'ts_ls', 'dockerls', 'r_language_server', 'bashls' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     -- on_attach = my_custom_on_attach,
@@ -233,7 +238,7 @@ vim.api.nvim_exec([[tnoremap <Esc> <C-\><C-n>]],false)
 
 
 -- overall setup
-opt.termguicolors = true
+opt.termguicolors = false
 opt.background = 'light'
 -- opt.cursorline = true
 opt.tabstop=4
@@ -249,9 +254,12 @@ opt.expandtab=true
 
 cmd[[autocmd StdinReadPre * let s:std_in=1]]
 cmd[[autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif]]
+
+-- line number
 cmd[[autocmd BufRead,BufNewFile,BufEnter * set nonumber]]
 
 
+<<<<<<< HEAD
 -- R setting --
 g.R_app = "~/.local/bin/radian"
 g.R_cmd = "R"
@@ -263,9 +271,18 @@ map("n", "<C-Space>", "<Plug>RSendLine")
 map("i", "<C-Space>", "<Plug>RSendLine")
 map("v", "<C-Space>", "<Plug>RSendLine")
 
-map("n", "<C-z>", "<Plug>RSendSelection")
-map("i", "<C-z>", "<Plug>RSendSelection")
-map("v", "<C-z>", "<Plug>RSendSelection")
+-- R settings
+g.R_app = 'R'
+g.R_cmd = 'R'
+g.R_hl_term = 0
+g.R_bracketed_paste=2
+map("n", "<A-Space>", "<Plug>RSendLine")
+map("i", "<A-Space>", "<Plug>RSendLine")
+map("v", "<A-Space>", "<Plug>RSendLine")
+
+map("n", "<A-z>", "<Plug>RSendSelection")
+map("i", "<A-z>", "<Plug>RSendSelection")
+map("v", "<A-z>", "<Plug>RSendSelection")
 
 -- treesitter configs
 require'nvim-treesitter.configs'.setup {
@@ -294,7 +311,7 @@ require'nvim-treesitter.configs'.setup {
       }
 }
 
---lualine config 
+--lualine config
 local get_color = require'lualine.utils.utils'.extract_highlight_colors
 require'lualine'.setup {
   options = {
@@ -379,12 +396,12 @@ require("trouble").setup {
     cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
     refresh = "r", -- manually refresh
     jump = {"<cr>", "<tab>"}, -- jump to the diagnostic or open / close folds
-    open_split = { "<c-x>" }, -- open buffer in new split
+            open_split = { "<c-x>" }, -- open buffer in new split
     open_vsplit = { "<c-v>" }, -- open buffer in new vsplit
     open_tab = { "<c-t>" }, -- open buffer in new tab
     jump_close = {"o"}, -- jump to the diagnostic and close the list
     toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
-    toggle_preview = "P", -- toggle auto_preview
+    toggle_preview = "P", -- toggle auto_preview=
     hover = "K", -- opens a small popup with the full multiline message
     preview = "p", -- preview the diagnostic location
     close_folds = {"zM", "zm"}, -- close all folds
@@ -410,43 +427,366 @@ require("trouble").setup {
     use_diagnostic_signs = false -- enabling this will use the signs defined in your lsp client
 }
   }
+-- python-mode config
+g.pymode_python = 'python3'
+g.pymode_syntax = 1
 
 --iron config
-local iron = require("iron.core")
+local iron = require("iron")
+local view = require("iron.view")
+local common = require("iron.fts.common")
 
-iron.setup {
+iron.core.setup {
   config = {
+    -- Whether a repl should be discarded or not
     scratch_repl = true,
+    -- Your repl definitions come here
     repl_definition = {
       sh = {
-        command = {"bash"}
+        -- Can be a table or a function that
+        -- returns a table (see below)
+        command = {"zsh"}
       },
       python = {
-        command = {"ipython"}
+        command = { ".venv/bin/python" },  -- or { "ipython", "--no-autoindent" }
+        format = common.bracketed_paste_python,
+        block_dividers = { "# %%", "#%%" },
+        venv_python = {
+          -- Note that the command is a string and not a table.
+          -- This allows neovims job to find the correct binary throught the path.
+          command = ".venv/bin/python"
+        }
       }
-    }
+    },
+    -- set the file type of the newly created repl to ft
+    -- bufnr is the buffer id of the REPL and ft is the filetype of the
+    -- language being used for the REPL.
+    repl_filetype = function(bufnr, ft)
+      return ft
+      -- or return a string name such as the following
+      -- return "iron"
+    end,
+    -- How the repl window will be displayed
+    -- See below for more information
+    repl_open_cmd = view.bottom(40),
+
+    -- repl_open_cmd can also be an array-style table so that multiple
+    -- repl_open_commands can be given.
+    -- When repl_open_cmd is given as a table, the first command given will
+    -- be the command that `IronRepl` initially toggles.
+    -- Moreover, when repl_open_cmd is a table, each key will automatically
+    -- be available as a keymap (see `keymaps` below) with the names
+    -- toggle_repl_with_cmd_1, ..., toggle_repl_with_cmd_k
+    -- For example,
+    --
+    -- repl_open_cmd = {
+    --   view.split.vertical.rightbelow("%40"), -- cmd_1: open a repl to the right
+    --   view.split.rightbelow("%25")  -- cmd_2: open a repl below
+    -- }
+
   },
+  -- Iron doesn't set keymaps by default anymore.
+  -- You can set them here or manually add keymaps to the functions in iron.core
   keymaps = {
-    send_motion = "<C-s>",
+    toggle_repl = "<space>rr", -- toggles the repl open and closed.
+    -- If repl_open_command is a table as above, then the following keymaps are
+    -- available
+    -- toggle_repl_with_cmd_1 = "<space>rv",
+    -- toggle_repl_with_cmd_2 = "<space>rh",
+    restart_repl = "<space>rR", -- calls `IronRestart` to restart the repl
+    send_motion = "<space>sc",
     visual_send = "<C-s>",
-    send_file = "<C-s>",
+    send_file = "<space>sf",
     send_line = "<C-s>",
-    send_mark = "<C>sm",
-    mark_motion = "<C>mc",
-    mark_visual = "<C>mc",
-    remove_mark = "<C>md",
-    cr = "<C>s<cr>",
-    interrupt = "<C>s<C>",
-    exit = "<C>sq",
-    clear = "<C>cl",
+    send_paragraph = "<space>sp",
+    send_until_cursor = "<space>su",
+    send_mark = "<space>sm",
+    send_code_block = "<space>sb",
+    send_code_block_and_move = "<space>sn",
+    mark_motion = "<space>mc",
+    mark_visual = "<space>mc",
+    remove_mark = "<space>md",
+    cr = "<space>s<cr>",
+    interrupt = "<space>s<space>",
+    exit = "<space>sq",
+    clear = "<space>cl",
   },
+  -- If the highlight is on, you can change how it looks
+  -- For the available options, check nvim_set_hl
   highlight = {
-    italic = false
-  }
+    italic = true
+  },
+  ignore_blank_lines = true, -- ignore blank lines when sending visual select lines
 }
 
 --python-mode condfig
 g.pymode_lint_checkers = {'pyflakes', 'pycodestyle'}
+
+-- iron also has a list of commands, see :h iron-commands for all available commands
+vim.keymap.set('n', '<space>rf', '<cmd>IronFocus<cr>')
+vim.keymap.set('n', '<space>rh', '<cmd>IronHide<cr>')
+vim.keymap.set('n', '<C-x>', '<cmd>IronReplHere<cr>')
+
+--jupytext config
+local jupytext = require("jupytext")
+jupytext.setup{
+      jupytext = 'jupytext',
+      format = "markdown",
+      update = true,
+      filetype = require("jupytext").get_filetype,
+      new_template = require("jupytext").default_new_template(),
+      sync_patterns = { '*.md', '*.py', '*.jl', '*.R', '*.Rmd', '*.qmd' },
+      autosync = true,
+      handle_url_schemes = true,
+}
+
+
+-- rust-tools config
+local rt = require("rust-tools")
+
+rt.setup({
+  server = {
+    on_attach = function(_, bufnr)
+      -- Hover actions
+      vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+      -- Code action groups
+      vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+    end,
+  },
+})
+
+--lsp colors
+local lsp_color = "#a6a2a2"
+require("lsp-colors").setup({
+  Error = lsp_color,
+  Warning = lsp_color,
+  Information = lsp_color,
+  Hint = lsp_color
+})
+vim.cmd[[highlight DiagnosticHint ctermfg=5 guifg=#a6a2a2]]
+vim.cmd[[highlight DiagnosticError ctermfg=5 guifg=#9b0000]]
+vim.cmd[[highlight DiagnosticWarn ctermfg=5 guifg=#a6a2a2]]
+vim.cmd[[highlight DiagnosticInfo ctermfg=5 guifg=#a6a2a2]]
+
+-- mappings
+map('n','<C-t>', ':NERDTreeToggle<CR>')
+map('n','<S-->', ':set background=dark<CR>')
+map('n','<S-=>', ':set background=light<CR>')
+map('n','<Leader>b', ':Buffers<CR>')
+map('n', '<C-t>', ':tabnew<CR>')
+map('n', '<S-Right>', ':tabn<CR>')
+map('n','<S-Left>', ':tabp<CR>')
+map('n','<A-e>', ':tabedit<CR>')
+map('n','<A-o>', ':tabonly<CR>')
+map('n','<A-z>', ':tabclose<CR>')
+map('n', '<C-b>', ':TagbarToggle<CR>')
+map('n', '<Leader>q', ':source ~/.config/nvim/init.lua<CR>')
+map('n', '<A-x>', ':IronReplHere<CR>')
+map('t', 'Esc', "<C-\\\\><C-n>")
+map('n', '<A-m-m>', ':RMarkdown! pdf latex_engine="xelatex"<CR>')
+map('i', '<A-m-m>', ':RMarkdown! pdf latex_engine="xelatex"<CR>')
+map('v', '<A-m-m>', ':RMarkdown! pdf latex_engine="xelatex"<CR>')
+map('n', '<A-Space>', '<Plug>RSendLine<CR>')
+map('v', '<A-Space>', '<Plug>RSendLine<CR>')
+map('i', '<A-Space>', '<Plug>RSendLine<CR>')
+
+cmd[[set modifiable]]
+cmd[[set ma]]
+-- cmd[[colorscheme tokyonight-day]]
+cmd[[highlight Cursor guifg=white guibg=#604ac3]]
+cmd[[set cursorline]]
+
+local opts = {
+  tools = { -- rust-tools options
+
+    -- how to execute terminal commands
+    -- options right now: termopen / quickfix / toggleterm / vimux
+    executor = require("rust-tools.executors").termopen,
+
+    -- callback to execute once rust-analyzer is done initializing the workspace
+    -- The callback receives one parameter indicating the `health` of the server: "ok" | "warning" | "error"
+    on_initialized = nil,
+
+    -- automatically call RustReloadWorkspace when writing to a Cargo.toml file.
+    reload_workspace_from_cargo_toml = true,
+
+    -- These apply to the default RustSetInlayHints command
+    inlay_hints = {
+      -- automatically set inlay hints (type hints)
+      -- default: true
+      auto = true,
+
+      -- Only show inlay hints for the current line
+      only_current_line = false,
+
+      -- whether to show parameter hints with the inlay hints or not
+      -- default: true
+      show_parameter_hints = true,
+
+      -- prefix for parameter hints
+      -- default: "<-"
+      parameter_hints_prefix = "<- ",
+
+      -- prefix for all the other hints (type, chaining)
+      -- default: "=>"
+      other_hints_prefix = "=> ",
+
+      -- whether to align to the length of the longest line in the file
+      max_len_align = false,
+
+      -- padding from the left if max_len_align is true
+      max_len_align_padding = 1,
+
+      -- whether to align to the extreme right or not
+      right_align = false,
+
+      -- padding from the right if right_align is true
+      right_align_padding = 7,
+
+      -- The color of the hints
+      highlight = "Comment",
+    },
+
+    -- options same as lsp hover / vim.lsp.util.open_floating_preview()
+    hover_actions = {
+
+      -- the border that is used for the hover window
+      -- see vim.api.nvim_open_win()
+      border = {
+        { "╭", "FloatBorder" },
+        { "─", "FloatBorder" },
+        { "╮", "FloatBorder" },
+        { "│", "FloatBorder" },
+        { "╯", "FloatBorder" },
+        { "─", "FloatBorder" },
+        { "╰", "FloatBorder" },
+        { "│", "FloatBorder" },
+      },
+
+      -- Maximal width of the hover window. Nil means no max.
+      max_width = nil,
+
+      -- Maximal height of the hover window. Nil means no max.
+      max_height = nil,
+
+      -- whether the hover action window gets automatically focused
+      -- default: false
+      auto_focus = false,
+    },
+
+    -- settings for showing the crate graph based on graphviz and the dot
+    -- command
+    crate_graph = {
+      -- Backend used for displaying the graph
+      -- see: https://graphviz.org/docs/outputs/
+      -- default: x11
+      backend = "x11",
+      -- where to store the output, nil for no output stored (relative
+      -- path from pwd)
+      -- default: nil
+      output = nil,
+      -- true for all crates.io and external crates, false only the local
+      -- crates
+      -- default: true
+      full = true,
+
+      -- List of backends found on: https://graphviz.org/docs/outputs/
+      -- Is used for input validation and autocompletion
+      -- Last updated: 2021-08-26
+      enabled_graphviz_backends = {
+        "bmp",
+        "cgimage",
+        "canon",
+        "dot",
+        "gv",
+        "xdot",
+        "xdot1.2",
+        "xdot1.4",
+        "eps",
+        "exr",
+        "fig",
+        "gd",
+        "gd2",
+        "gif",
+        "gtk",
+        "ico",
+        "cmap",
+        "ismap",
+        "imap",
+        "cmapx",
+        "imap_np",
+        "cmapx_np",
+        "jpg",
+        "jpeg",
+        "jpe",
+        "jp2",
+        "json",
+        "json0",
+        "dot_json",
+        "xdot_json",
+        "pdf",
+        "pic",
+        "pct",
+        "pict",
+        "plain",
+        "plain-ext",
+        "png",
+        "pov",
+        "ps",
+        "ps2",
+        "psd",
+        "sgi",
+        "svg",
+        "svgz",
+        "tga",
+        "tiff",
+        "tif",
+        "tk",
+        "vml",
+        "vmlz",
+        "wbmp",
+        "webp",
+        "xlib",
+        "x11",
+      },
+    },
+  },
+
+  -- all the opts to send to nvim-lspconfig
+  -- these override the defaults set by rust-tools.nvim
+  -- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
+  server = {
+    -- standalone file support
+    -- setting it to false may improve startup time
+    standalone = true,
+  }, -- rust-analyzer options
+
+  -- debugging stuff
+  dap = {
+    adapter = {
+      type = "executable",
+      command = "lldb-vscode",
+      name = "rt_lldb",
+    },
+  },
+}
+
+require('rust-tools').setup(opts)
+
+
+-- custom autopairs
+local autopairs = require("autopairs")
+
+-- Use vim.keymap.set to bind the keys
+local opts = { noremap = true, silent = true }
+
+vim.keymap.set("i", "(", function() autopairs.insert_pair("(") end, opts)
+vim.keymap.set("i", "[", function() autopairs.insert_pair("[") end, opts)
+vim.keymap.set("i", "{", function() autopairs.insert_pair("{") end, opts)
+vim.keymap.set("i", '"', function() autopairs.insert_pair('"') end, opts)
+vim.keymap.set("i", "'", function() autopairs.insert_pair("'") end, opts)
+
+>>>>>>> 04cd9521ed2a06367755af45efa379bc712a30f1
 
 --lsp colors
 local lsp_color = "#a6a2a2"

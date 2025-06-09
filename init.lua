@@ -30,7 +30,6 @@ require('packer').startup(function()
   use 'ncm2/ncm2-path'
   use 'gaalcaras/ncm-R'
   use 'roxma/vim-hug-neovim-rpc'
-  use 'jalvesaq/R-Vim-runtime'
   use 'lervag/vimtex'
   use 'vim-pandoc/vim-pandoc'
   use 'vim-pandoc/vim-pandoc-syntax'
@@ -46,7 +45,43 @@ require('packer').startup(function()
   use 'folke/tokyonight.nvim'
   use 'rebelot/kanagawa.nvim'
   use 'lewis6991/hover.nvim'
-  use 'R-nvim/R.nvim'
+  use {
+    "R-nvim/R.nvim",
+    lazy = false,
+    config = function()
+      -- vim.api.nvim_buf_set_keymap(0, "n", "<Enter>", "<Plug>RDSendLine", {})
+      -- vim.api.nvim_buf_set_keymap(0, "v", "<Enter>", "<Plug>RSendSelection", {})
+      -- Create a table with the options to be passed to setup()
+      local opts = {
+        R_app = "radian",
+        R_args = {},
+        bracketed_paste = true,
+        min_editor_width = 72,
+        rconsole_width = 0,
+        rconsole_height = 10,
+        config_tmux = false,
+        convert_range_int = true,
+        close_term = false,
+        auto_scroll = true,
+        wait = 100,
+        csv_app = "terminal:vd",
+        auto_quit = true,
+        disable_cmds = {
+          "RClearConsole",
+          "RCustomStart",
+          "RSPlot",
+          "RSaveClose",
+        },
+      }
+      -- Check if the environment variable "R_AUTO_START" exists.
+      -- If using fish shell, you could put in your config.fish:
+      -- alias r "R_AUTO_START=true nvim"
+      if vim.env.R_AUTO_START == "true" then
+        opts.auto_start = "always"
+      end
+      require("r").setup(opts)
+    end,
+  }
   use 'R-nvim/cmp-r'
   use 'Vigemus/iron.nvim'
   use 'goerz/jupytext.nvim'
@@ -58,13 +93,9 @@ local fn = vim.fn
 local g = vim.g
 local opt = vim.opt
 
--- global provider setup
-g.python3_host_prog = '/opt/homebrew/bin/python3'
-
-
 -- allow mouse for hover
 opt.mouse = 'a'
-g.python3_host_prog='/usr/bin/python3.11'
+g.python3_host_prog='/usr/bin/python3'
 
 local function map(mode, lhs, rhs, opts)
   local options = {noremap = true}
@@ -259,30 +290,29 @@ cmd[[autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 cmd[[autocmd BufRead,BufNewFile,BufEnter * set nonumber]]
 
 
-<<<<<<< HEAD
--- R setting --
-g.R_app = "~/.local/bin/radian"
-g.R_cmd = "R"
-g.R_hl_term = 0
-g.R_args = {}
+-- R settings
+g.R_app = "radian"
 g.R_bracketed_paste = 1
+
+-- Keymaps for Nvim-R
+vim.api.nvim_set_keymap("n", "<leader>rf", ":RStart<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>rs", ":RSendLine<CR>", { noremap = true, silent = true })
+
 
 map("n", "<C-Space>", "<Plug>RSendLine")
 map("i", "<C-Space>", "<Plug>RSendLine")
 map("v", "<C-Space>", "<Plug>RSendLine")
 
--- R settings
-g.R_app = 'R'
-g.R_cmd = 'R'
-g.R_hl_term = 0
-g.R_bracketed_paste=2
-map("n", "<A-Space>", "<Plug>RSendLine")
-map("i", "<A-Space>", "<Plug>RSendLine")
-map("v", "<A-Space>", "<Plug>RSendLine")
+map("n", "<C-z>", "<Plug>RSendSelection")
+map("i", "<C-z>", "<Plug>RSendSelection")
+map("v", "<C-z>", "<Plug>RSendSelection")
 
-map("n", "<A-z>", "<Plug>RSendSelection")
-map("i", "<A-z>", "<Plug>RSendSelection")
-map("v", "<A-z>", "<Plug>RSendSelection")
+-- Cmp-R
+local cmpR = require("cmp_r")
+cmpR.setup {
+    filetypes = {"r", "rmd", "quarto"},
+    doc_width = 58,
+}
 
 -- treesitter configs
 require'nvim-treesitter.configs'.setup {
@@ -342,9 +372,11 @@ require'lualine'.setup {
   tabline = {
       lualine_a = {},
       lualine_b = {'branch'},
-      lualine_c = {'filename'},
+      lualine_c = {{'filename',
+            path= 1
+        }},
       lualine_x = {},
-      lualine_y = {},
+      lualine_y = {'lsp_status'},
       lualine_z = {'tabs'}
   },
   extensions = {}
@@ -586,9 +618,6 @@ map('t', 'Esc', "<C-\\\\><C-n>")
 map('n', '<A-m-m>', ':RMarkdown! pdf latex_engine="xelatex"<CR>')
 map('i', '<A-m-m>', ':RMarkdown! pdf latex_engine="xelatex"<CR>')
 map('v', '<A-m-m>', ':RMarkdown! pdf latex_engine="xelatex"<CR>')
-map('n', '<A-Space>', '<Plug>RSendLine<CR>')
-map('v', '<A-Space>', '<Plug>RSendLine<CR>')
-map('i', '<A-Space>', '<Plug>RSendLine<CR>')
 
 cmd[[set modifiable]]
 cmd[[set ma]]
@@ -786,8 +815,6 @@ vim.keymap.set("i", "{", function() autopairs.insert_pair("{") end, opts)
 vim.keymap.set("i", '"', function() autopairs.insert_pair('"') end, opts)
 vim.keymap.set("i", "'", function() autopairs.insert_pair("'") end, opts)
 
->>>>>>> 04cd9521ed2a06367755af45efa379bc712a30f1
-
 --lsp colors
 local lsp_color = "#a6a2a2"
 require("lsp-colors").setup({
@@ -821,6 +848,9 @@ map('v', '<A-m-m>', ':RMarkdown! pdf latex_engine="xelatex"<CR>')
 map('n', '<C-Space>', '<Plug>RSendLine<CR>')
 map('v', '<C-Space>', '<Plug>RSendLine<CR>')
 map('i', '<C-Space>', '<Plug>RSendLine<CR>')
+map('n', '<Leader>a', ':Ag<CR>')
+map('i', '<Leader>a', ':Ag<CR>')
+map('v', '<Leader>a', ':Ag<CR>')
 
 cmd[[set modifiable]]
 cmd[[set ma]]

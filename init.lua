@@ -24,7 +24,6 @@ require('packer').startup(function()
   use 'tpope/vim-surround'
   use 'tpope/vim-commentary'
   use 'folke/lsp-colors.nvim'
-  use 'jalvesaq/Nvim-R'
   use 'ncm2/ncm2'
   use 'roxma/nvim-yarp'
   use 'ncm2/ncm2-path'
@@ -44,16 +43,22 @@ require('packer').startup(function()
   use 'morhetz/gruvbox'
   use 'folke/tokyonight.nvim'
   use 'rebelot/kanagawa.nvim'
+  use 'rktjmp/lush.nvim'
+  use 'daenuprobst/lcarsoft'
   use 'lewis6991/hover.nvim'
+  use 'Mitgorakh/snow'
   use {
     "R-nvim/R.nvim",
     lazy = false,
+    enabled = true,
     config = function()
       -- vim.api.nvim_buf_set_keymap(0, "n", "<Enter>", "<Plug>RDSendLine", {})
       -- vim.api.nvim_buf_set_keymap(0, "v", "<Enter>", "<Plug>RSendSelection", {})
       -- Create a table with the options to be passed to setup()
       local opts = {
         R_app = "radian",
+        R_cmd = "radian",
+        external_term = "radian",
         R_args = {},
         bracketed_paste = true,
         min_editor_width = 72,
@@ -85,7 +90,12 @@ require('packer').startup(function()
   use 'R-nvim/cmp-r'
   use 'Vigemus/iron.nvim'
   use 'goerz/jupytext.nvim'
+  use 'TamasSmahajcsikszabo/2001-theme'
   end)
+
+require("r").setup({
+  R_app = "radian",
+})
 
 
 local cmd = vim.cmd
@@ -105,478 +115,19 @@ end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-local lspconfig = require('lspconfig')
+
 
 local servers = { 'clangd', 'rust_analyzer', 'pyright', 'ts_ls', 'dockerls', 'r_language_server', 'bashls' }
 for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
+  vim.lsp.enable(lsp)
+  vim.lsp.config(lsp, {
     -- on_attach = my_custom_on_attach,
     capabilities = capabilities,
-  }
+  })
 end
 
-vim.keymap.set('n', '<MouseMove>', require('hover').hover_mouse, { desc = "hover.nvim (mouse)" })
-vim.o.mousemoveevent = true
-require("hover").setup {
-            init = function()
-                -- Require providers
-                require("hover.providers.lsp")
-                require('hover.providers.gh')
-                require('hover.providers.gh_user')
-                require('hover.providers.jira')
-                require('hover.providers.dap')
-                require('hover.providers.fold_preview')
-                require('hover.providers.diagnostic')
-                require('hover.providers.man')
-                require('hover.providers.dictionary')
-            end,
-            preview_opts = {
-                border = 'single'
-            },
-            -- Whether the contents of a currently open hover window should be moved
-            -- to a :h preview-window when pressing the hover keymap.
-            preview_window = true,
-            title = true,
-            mouse_providers = {
-                'LSP'
-            },
-            mouse_delay = 50
-        }
--- typescript settings/javascript/prettier
-local null_ls = require("null-ls")
-
-local group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false })
-local event = "BufWritePre" -- or "BufWritePost"
-local async = event == "BufWritePost"
-
-null_ls.setup({
-  on_attach = function(client, bufnr)
-    if client.supports_method("textDocument/formatting") then
-      vim.keymap.set("n", "<Leader>f", function()
-        vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
-      end, { buffer = bufnr, desc = "[lsp] format" })
-
-      -- format on save
-      vim.api.nvim_clear_autocmds({ buffer = bufnr, group = group })
-      vim.api.nvim_create_autocmd(event, {
-        buffer = bufnr,
-        group = group,
-        callback = function()
-          vim.lsp.buf.format({ bufnr = bufnr, async = async })
-        end,
-        desc = "[lsp] format on save",
-      })
-    end
-
-    if client.supports_method("textDocument/rangeFormatting") then
-      vim.keymap.set("x", "<Leader>f", function()
-        vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
-      end, { buffer = bufnr, desc = "[lsp] format" })
-    end
-  end,
-})
-
-local prettier = require("prettier")
-
-prettier.setup({
-  bin = 'prettier', -- or `'prettierd'` (v0.22+)
-  filetypes = {
-    "css",
-    "graphql",
-    "html",
-    "javascript",
-    "javascriptreact",
-    "json",
-    "less",
-    "markdown",
-    "scss",
-    "typescript",
-    "typescriptreact",
-    "yaml",
-  },
-})
-
-prettier.setup({
-  cli_options = {
-    arrow_parens = "always",
-    bracket_spacing = true,
-    bracket_same_line = false,
-    embedded_language_formatting = "auto",
-    end_of_line = "lf",
-    html_whitespace_sensitivity = "css",
-    -- jsx_bracket_same_line = false,
-    jsx_single_quote = false,
-    print_width = 80,
-    prose_wrap = "preserve",
-    quote_props = "as-needed",
-    semi = true,
-    single_attribute_per_line = false,
-    single_quote = false,
-    tab_width = 2,
-    trailing_comma = "es5",
-    use_tabs = false,
-    vue_indent_script_and_style = false,
-  },
-})
-
-local luasnip = require 'luasnip'
-local cmp = require 'cmp'
-
-cmp.setup {
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
-  mapping = cmp.mapping.preset.insert({
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<CR>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    },
-    ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-    ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-  }),
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'luasnip' },
-  },
-}
-
-
-vim.o.guicursor="n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175"
-
--- terminal-mode exit
-vim.api.nvim_exec([[tnoremap <Esc> <C-\><C-n>]],false)
-
-
--- overall setup
-opt.termguicolors = false
-opt.background = 'light'
--- opt.cursorline = true
-opt.tabstop=4
-opt.shiftwidth=4
-opt.softtabstop=4
-opt.expandtab=true
-
-
--- python setup
--- g.syntastic_python_python_exec = '/usr/bin/python'
--- g.nvim_ipy_perform_mappings = 0
--- g.python3_host_prog = '/usr/bin/python'
-
-cmd[[autocmd StdinReadPre * let s:std_in=1]]
-cmd[[autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif]]
-
--- line number
-cmd[[autocmd BufRead,BufNewFile,BufEnter * set nonumber]]
-
-
--- R settings
-g.R_app = "radian"
-g.R_bracketed_paste = 1
-
--- Keymaps for Nvim-R
-vim.api.nvim_set_keymap("n", "<leader>rf", ":RStart<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>rs", ":RSendLine<CR>", { noremap = true, silent = true })
-
-
-map("n", "<C-Space>", "<Plug>RSendLine")
-map("i", "<C-Space>", "<Plug>RSendLine")
-map("v", "<C-Space>", "<Plug>RSendLine")
-
-map("n", "<C-z>", "<Plug>RSendSelection")
-map("i", "<C-z>", "<Plug>RSendSelection")
-map("v", "<C-z>", "<Plug>RSendSelection")
-
--- Cmp-R
-local cmpR = require("cmp_r")
-cmpR.setup {
-    filetypes = {"r", "rmd", "quarto"},
-    doc_width = 58,
-}
-
--- treesitter configs
-require'nvim-treesitter.configs'.setup {
-  highlight = {
-    enable = true,
-    additional_vim_regex_highlighting = true,
-  },
-  incremental_selection = {
-    enable = true,
-    keymaps = {
-      init_selection = "gnn",
-      node_incremental = "grn",
-      scope_incremental = "grc",
-      node_decremental = "grm",
-        }
-    },
-      indent = {
-        enable = true,
-        disable = { "python" }
-      },
-      statusline = {
-        indicator_size = 300,
-        type_patterns = {'function', 'method', 'indicator'},
-        transform_fn = function(line) return line:gsub('%s*[%[%(%{]*%s*$', '') end,
-        separator = '>'
-      }
-}
-
---lualine config
-local get_color = require'lualine.utils.utils'.extract_highlight_colors
-require'lualine'.setup {
-  options = {
-    icons_enabled = true,
-    dimInactive = true,
-    theme = 'auto',
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
-    disabled_filetypes = {},
-    always_divide_middle = true,
-  },
-  sections = {
-    lualine_a = {'mode'},
-    lualine_b = {'branch'},
-    lualine_c = {{'diagnostics', colored=false}},
-    lualine_x = {'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location'}
-  },
-  inactive_sections = {
-    lualine_a = {},
-    lualine_b = {},
-    lualine_c = {'filename'},
-    lualine_x = {'location'},
-    lualine_y = {},
-    lualine_z = {}
-  },
-  tabline = {
-      lualine_a = {},
-      lualine_b = {'branch'},
-      lualine_c = {{'filename',
-            path= 1
-        }},
-      lualine_x = {},
-      lualine_y = {'lsp_status'},
-      lualine_z = {'tabs'}
-  },
-  extensions = {}
-  }
-  require('lualine').setup {
-  options = {
-    theme = "auto"
-  }
-}
-
---eveforest config
-g.everforest_background='soft'
-g.everforest_ui_contrast = 'low'
-
-
--- setup must be called before loading
-currentHour = os.date('%H', os.time())
-local colorCommand="colorscheme dayfox"
-if tonumber(currentHour) >= 22 then colorCommand = "colorscheme kanagawa-dragon" end
-
-vim.cmd(colorCommand)
-opt.laststatus = 3
-opt.fillchars:append({
-    horiz = '━',
-    horizup = '┻',
-    horizdown = '┳',
-    vert = '┃',
-    vertleft = '┨',
-    vertright = '┣',
-    verthoriz = '╋',
-})
-
--- trouble config
-require("trouble").setup {
-{
-    position = "bottom", -- position of the list can be: bottom, top, left, right
-    height = 10, -- height of the trouble list when position is top or bottom
-    width = 50, -- width of the list when position is left or right
-    icons = true, -- use devicons for filenames
-    mode = "workspace_diagnostics", -- "workspace_diagnostics", "document_diagnostics", "quickfix", "lsp_references", "loclist"
-    fold_open = "", -- icon used for open folds
-    fold_closed = "", -- icon used for closed folds
-    group = true, -- group results by file
-    padding = true, -- add an extra new line on top of the list
-    action_keys = { -- key mappings for actions in the trouble list
-    -- map to {} to remove a mapping, for example:
-    -- close = {},
-    close = "q", -- close the list
-    cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
-    refresh = "r", -- manually refresh
-    jump = {"<cr>", "<tab>"}, -- jump to the diagnostic or open / close folds
-            open_split = { "<c-x>" }, -- open buffer in new split
-    open_vsplit = { "<c-v>" }, -- open buffer in new vsplit
-    open_tab = { "<c-t>" }, -- open buffer in new tab
-    jump_close = {"o"}, -- jump to the diagnostic and close the list
-    toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
-    toggle_preview = "P", -- toggle auto_preview=
-    hover = "K", -- opens a small popup with the full multiline message
-    preview = "p", -- preview the diagnostic location
-    close_folds = {"zM", "zm"}, -- close all folds
-    open_folds = {"zR", "zr"}, -- open all folds
-    toggle_fold = {"zA", "za"}, -- toggle fold of current file
-    previous = "k", -- preview item
-    next = "j" -- next item
-},
-    indent_lines = true, -- add an indent guide below the fold icons
-    auto_open = false, -- automatically open the list when you have diagnostics
-    auto_close = false, -- automatically close the list when you have no diagnostics
-    auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
-    auto_fold = false, -- automatically fold a file trouble list at creation
-    auto_jump = {"lsp_definitions"}, -- for the given modes, automatically jump if there is only a single result
-    signs = {
-    -- icons / text used for a diagnostic
-    error = "",
-    warning = "",
-    hint = "",
-    information = "",
-    other = "﫠"
-},
-    use_diagnostic_signs = false -- enabling this will use the signs defined in your lsp client
-}
-  }
--- python-mode config
-g.pymode_python = 'python3'
-g.pymode_syntax = 1
-
---iron config
-local iron = require("iron")
-local view = require("iron.view")
-local common = require("iron.fts.common")
-
-iron.core.setup {
-  config = {
-    -- Whether a repl should be discarded or not
-    scratch_repl = true,
-    -- Your repl definitions come here
-    repl_definition = {
-      sh = {
-        -- Can be a table or a function that
-        -- returns a table (see below)
-        command = {"zsh"}
-      },
-      python = {
-        command = { ".venv/bin/python" },  -- or { "ipython", "--no-autoindent" }
-        format = common.bracketed_paste_python,
-        block_dividers = { "# %%", "#%%" },
-        venv_python = {
-          -- Note that the command is a string and not a table.
-          -- This allows neovims job to find the correct binary throught the path.
-          command = ".venv/bin/python"
-        }
-      }
-    },
-    -- set the file type of the newly created repl to ft
-    -- bufnr is the buffer id of the REPL and ft is the filetype of the
-    -- language being used for the REPL.
-    repl_filetype = function(bufnr, ft)
-      return ft
-      -- or return a string name such as the following
-      -- return "iron"
-    end,
-    -- How the repl window will be displayed
-    -- See below for more information
-    repl_open_cmd = view.bottom(40),
-
-    -- repl_open_cmd can also be an array-style table so that multiple
-    -- repl_open_commands can be given.
-    -- When repl_open_cmd is given as a table, the first command given will
-    -- be the command that `IronRepl` initially toggles.
-    -- Moreover, when repl_open_cmd is a table, each key will automatically
-    -- be available as a keymap (see `keymaps` below) with the names
-    -- toggle_repl_with_cmd_1, ..., toggle_repl_with_cmd_k
-    -- For example,
-    --
-    -- repl_open_cmd = {
-    --   view.split.vertical.rightbelow("%40"), -- cmd_1: open a repl to the right
-    --   view.split.rightbelow("%25")  -- cmd_2: open a repl below
-    -- }
-
-  },
-  -- Iron doesn't set keymaps by default anymore.
-  -- You can set them here or manually add keymaps to the functions in iron.core
-  keymaps = {
-    toggle_repl = "<space>rr", -- toggles the repl open and closed.
-    -- If repl_open_command is a table as above, then the following keymaps are
-    -- available
-    -- toggle_repl_with_cmd_1 = "<space>rv",
-    -- toggle_repl_with_cmd_2 = "<space>rh",
-    restart_repl = "<space>rR", -- calls `IronRestart` to restart the repl
-    send_motion = "<space>sc",
-    visual_send = "<C-s>",
-    send_file = "<space>sf",
-    send_line = "<C-s>",
-    send_paragraph = "<space>sp",
-    send_until_cursor = "<space>su",
-    send_mark = "<space>sm",
-    send_code_block = "<space>sb",
-    send_code_block_and_move = "<space>sn",
-    mark_motion = "<space>mc",
-    mark_visual = "<space>mc",
-    remove_mark = "<space>md",
-    cr = "<space>s<cr>",
-    interrupt = "<space>s<space>",
-    exit = "<space>sq",
-    clear = "<space>cl",
-  },
-  -- If the highlight is on, you can change how it looks
-  -- For the available options, check nvim_set_hl
-  highlight = {
-    italic = true
-  },
-  ignore_blank_lines = true, -- ignore blank lines when sending visual select lines
-}
-
---python-mode condfig
-g.pymode_lint_checkers = {'pyflakes', 'pycodestyle'}
-
--- iron also has a list of commands, see :h iron-commands for all available commands
-vim.keymap.set('n', '<space>rf', '<cmd>IronFocus<cr>')
-vim.keymap.set('n', '<space>rh', '<cmd>IronHide<cr>')
-vim.keymap.set('n', '<C-x>', '<cmd>IronReplHere<cr>')
-
---jupytext config
-local jupytext = require("jupytext")
-jupytext.setup{
-      jupytext = 'jupytext',
-      format = "markdown",
-      update = true,
-      filetype = require("jupytext").get_filetype,
-      new_template = require("jupytext").default_new_template(),
-      sync_patterns = { '*.md', '*.py', '*.jl', '*.R', '*.Rmd', '*.qmd' },
-      autosync = true,
-      handle_url_schemes = true,
-}
-
-
 -- rust-tools config
-local rt = require("rust-tools")
-
-rt.setup({
+vim.lsp.config("rust-tools", {
   server = {
     on_attach = function(_, bufnr)
       -- Hover actions
@@ -585,47 +136,6 @@ rt.setup({
       vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
     end,
   },
-})
-
---lsp colors
-local lsp_color = "#a6a2a2"
-require("lsp-colors").setup({
-  Error = lsp_color,
-  Warning = lsp_color,
-  Information = lsp_color,
-  Hint = lsp_color
-})
-vim.cmd[[highlight DiagnosticHint ctermfg=5 guifg=#a6a2a2]]
-vim.cmd[[highlight DiagnosticError ctermfg=5 guifg=#9b0000]]
-vim.cmd[[highlight DiagnosticWarn ctermfg=5 guifg=#a6a2a2]]
-vim.cmd[[highlight DiagnosticInfo ctermfg=5 guifg=#a6a2a2]]
-
--- mappings
-map('n','<C-t>', ':NERDTreeToggle<CR>')
-map('n','<S-->', ':set background=dark<CR>')
-map('n','<S-=>', ':set background=light<CR>')
-map('n','<Leader>b', ':Buffers<CR>')
-map('n', '<C-t>', ':tabnew<CR>')
-map('n', '<S-Right>', ':tabn<CR>')
-map('n','<S-Left>', ':tabp<CR>')
-map('n','<A-e>', ':tabedit<CR>')
-map('n','<A-o>', ':tabonly<CR>')
-map('n','<A-z>', ':tabclose<CR>')
-map('n', '<C-b>', ':TagbarToggle<CR>')
-map('n', '<Leader>q', ':source ~/.config/nvim/init.lua<CR>')
-map('n', '<A-x>', ':IronReplHere<CR>')
-map('t', 'Esc', "<C-\\\\><C-n>")
-map('n', '<A-m-m>', ':RMarkdown! pdf latex_engine="xelatex"<CR>')
-map('i', '<A-m-m>', ':RMarkdown! pdf latex_engine="xelatex"<CR>')
-map('v', '<A-m-m>', ':RMarkdown! pdf latex_engine="xelatex"<CR>')
-
-cmd[[set modifiable]]
-cmd[[set ma]]
--- cmd[[colorscheme tokyonight-day]]
-cmd[[highlight Cursor guifg=white guibg=#604ac3]]
-cmd[[set cursorline]]
-
-local opts = {
   tools = { -- rust-tools options
 
     -- how to execute terminal commands
@@ -798,22 +308,529 @@ local opts = {
       name = "rt_lldb",
     },
   },
+})
+
+vim.keymap.set('n', '<MouseMove>', require('hover').hover_mouse, { desc = "hover.nvim (mouse)" })
+vim.o.mousemoveevent = true
+require('hover').config({
+      --- List of modules names to load as providers.
+      --- @type (string|Hover.Config.Provider)[]
+      providers = {
+        'hover.providers.diagnostic',
+        'hover.providers.lsp',
+        'hover.providers.dap',
+        'hover.providers.man',
+        'hover.providers.dictionary',
+        -- Optional, disabled by default:
+        -- 'hover.providers.gh',
+        -- 'hover.providers.gh_user',
+        -- 'hover.providers.jira',
+        -- 'hover.providers.fold_preview',
+        -- 'hover.providers.highlight',
+      },
+      preview_opts = {
+        border = 'single'
+      },
+      -- Whether the contents of a currently open hover window should be moved
+      -- to a :h preview-window when pressing the hover keymap.
+      preview_window = false,
+      title = true,
+      mouse_providers = {
+        'hover.providers.lsp',
+      },
+      mouse_delay = 1000
+})
+
+
+-- typescript settings/javascript/prettier
+local null_ls = require("null-ls")
+
+local group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false })
+local event = "BufWritePre" -- or "BufWritePost"
+local async = event == "BufWritePost"
+
+null_ls.setup({
+  on_attach = function(client, bufnr)
+    if client.supports_method("textDocument/formatting") then
+      vim.keymap.set("n", "<Leader>f", function()
+        vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+      end, { buffer = bufnr, desc = "[lsp] format" })
+
+      -- format on save
+      vim.api.nvim_clear_autocmds({ buffer = bufnr, group = group })
+      vim.api.nvim_create_autocmd(event, {
+        buffer = bufnr,
+        group = group,
+        callback = function()
+          vim.lsp.buf.format({ bufnr = bufnr, async = async })
+        end,
+        desc = "[lsp] format on save",
+      })
+    end
+
+    if client.supports_method("textDocument/rangeFormatting") then
+      vim.keymap.set("x", "<Leader>f", function()
+        vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+      end, { buffer = bufnr, desc = "[lsp] format" })
+    end
+  end,
+})
+
+local prettier = require("prettier")
+
+prettier.setup({
+  bin = 'prettier', -- or `'prettierd'` (v0.22+)
+  filetypes = {
+    "css",
+    "graphql",
+    "html",
+    "javascript",
+    "javascriptreact",
+    "json",
+    "less",
+    "markdown",
+    "scss",
+    "typescript",
+    "typescriptreact",
+    "yaml",
+  },
+})
+
+prettier.setup({
+  cli_options = {
+    arrow_parens = "always",
+    bracket_spacing = true,
+    bracket_same_line = false,
+    embedded_language_formatting = "auto",
+    end_of_line = "lf",
+    html_whitespace_sensitivity = "css",
+    -- jsx_bracket_same_line = false,
+    jsx_single_quote = false,
+    print_width = 80,
+    prose_wrap = "preserve",
+    quote_props = "as-needed",
+    semi = true,
+    single_attribute_per_line = false,
+    single_quote = false,
+    tab_width = 2,
+    trailing_comma = "es5",
+    use_tabs = false,
+    vue_indent_script_and_style = false,
+  },
+})
+
+local luasnip = require 'luasnip'
+local cmp = require 'cmp'
+
+cmp.setup {
+  snippet = {
+    expand = function(args)
+      luasnip.lsp_expand(args.body)
+    end,
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<CR>'] = cmp.mapping.confirm {
+      behavior = cmp.ConfirmBehavior.Replace,
+      select = true,
+    },
+    ['<Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+    ['<S-Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+  }),
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'luasnip' },
+  },
 }
 
-require('rust-tools').setup(opts)
+
+vim.o.guicursor="n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175"
+
+-- terminal-mode exit
+vim.api.nvim_exec([[tnoremap <Esc> <C-\><C-n>]],false)
 
 
--- custom autopairs
-local autopairs = require("autopairs")
+-- overall setup
+opt.termguicolors = false
+opt.background = 'light'
+-- opt.cursorline = true
+opt.tabstop=4
+opt.shiftwidth=4
+opt.softtabstop=4
+opt.expandtab=true
 
--- Use vim.keymap.set to bind the keys
-local opts = { noremap = true, silent = true }
 
-vim.keymap.set("i", "(", function() autopairs.insert_pair("(") end, opts)
-vim.keymap.set("i", "[", function() autopairs.insert_pair("[") end, opts)
-vim.keymap.set("i", "{", function() autopairs.insert_pair("{") end, opts)
-vim.keymap.set("i", '"', function() autopairs.insert_pair('"') end, opts)
-vim.keymap.set("i", "'", function() autopairs.insert_pair("'") end, opts)
+-- python setup
+-- g.syntastic_python_python_exec = '/usr/bin/python'
+-- g.nvim_ipy_perform_mappings = 0
+-- g.python3_host_prog = '/usr/bin/python'
+
+cmd[[autocmd StdinReadPre * let s:std_in=1]]
+cmd[[autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif]]
+
+-- line number
+cmd[[autocmd BufRead,BufNewFile,BufEnter * set nonumber]]
+
+
+
+-- Keymaps for Nvim-R
+vim.api.nvim_set_keymap("n", "<leader>rf", ":RStart<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>rs", ":RSendLine<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<Leader>t", ":Floaterminal<CR>",{})
+vim.api.nvim_set_keymap("i", "<Leader>t", ":Floaterminal<CR>",{})
+vim.api.nvim_set_keymap("v", "<Leader>t", ":Floaterminal<CR>",{})
+
+
+map("n", "<C-Space>", "<Plug>RSendLine")
+map("i", "<C-Space>", "<Plug>RSendLine")
+map("v", "<C-Space>", "<Plug>RSendLine")
+
+map("n", "<C-z>", "<Plug>RSendSelection")
+map("i", "<C-z>", "<Plug>RSendSelection")
+map("v", "<C-z>", "<Plug>RSendSelection")
+
+-- Cmp-R
+local cmpR = require("cmp_r")
+cmpR.setup {
+    filetypes = {"r", "rmd", "quarto"},
+    doc_width = 58,
+}
+
+-- treesitter configs
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = true,
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "gnn",
+      node_incremental = "grn",
+      scope_incremental = "grc",
+      node_decremental = "grm",
+        }
+    },
+      indent = {
+        enable = true,
+        disable = { "python" }
+      },
+      statusline = {
+        indicator_size = 300,
+        type_patterns = {'function', 'method', 'indicator'},
+        transform_fn = function(line) return line:gsub('%s*[%[%(%{]*%s*$', '') end,
+        separator = '>'
+      }
+}
+vim.treesitter.language.register('rmarkdown', { 'Rmd' })
+vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+  pattern = "*.Rmd",
+  callback = function()
+    vim.bo.filetype = "markdown"
+  end
+})
+
+--lualine config
+local get_color = require'lualine.utils.utils'.extract_highlight_colors
+
+require'lualine'.setup {
+  options = {
+    icons_enabled = true,
+    dimInactive = true,
+    theme = 'auto',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {},
+    always_divide_middle = true,
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch'},
+    lualine_c = {{'diagnostics', colored=false}},
+    lualine_x = {'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {
+      lualine_a = {},
+      lualine_b = {'branch'},
+      lualine_c = {{'filename',
+            path= 1
+        }},
+      lualine_x = {},
+      lualine_y = {'lsp_status'},
+      lualine_z = {'tabs'}
+  },
+  extensions = {}
+  }
+  require('lualine').setup {
+  options = {
+    theme = "auto"
+  }
+}
+
+--eveforest config
+g.everforest_background='soft'
+g.everforest_ui_contrast = 'low'
+
+
+-- setup must be called before loading
+currentHour = os.date('%H', os.time())
+-- local colorCommand="colorscheme dayfox"
+-- tokyionight
+require("tokyonight").setup({
+    day_brightness = 0.25,
+    lualine_bold = true,
+})
+
+require("2001").setup({
+    transparent = false,
+    terminal_colors = true,
+    dim_inactive = false,
+})
+
+local colorCommand="colorscheme dayfox"
+if tonumber(currentHour) >= 22 then colorCommand = "colorscheme kanagawa-dragon" end
+
+vim.cmd(colorCommand)
+opt.laststatus = 3
+opt.fillchars:append({
+    horiz = '━',
+    horizup = '┻',
+    horizdown = '┳',
+    vert = '┃',
+    vertleft = '┨',
+    vertright = '┣',
+    verthoriz = '╋',
+})
+
+-- trouble config
+require("trouble").setup {
+{
+    position = "bottom", -- position of the list can be: bottom, top, left, right
+    height = 10, -- height of the trouble list when position is top or bottom
+    width = 50, -- width of the list when position is left or right
+    icons = true, -- use devicons for filenames
+    mode = "workspace_diagnostics", -- "workspace_diagnostics", "document_diagnostics", "quickfix", "lsp_references", "loclist"
+    fold_open = "", -- icon used for open folds
+    fold_closed = "", -- icon used for closed folds
+    group = true, -- group results by file
+    padding = true, -- add an extra new line on top of the list
+    action_keys = { -- key mappings for actions in the trouble list
+    -- map to {} to remove a mapping, for example:
+    -- close = {},
+    close = "q", -- close the list
+    cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
+    refresh = "r", -- manually refresh
+    jump = {"<cr>", "<tab>"}, -- jump to the diagnostic or open / close folds
+            open_split = { "<c-x>" }, -- open buffer in new split
+    open_vsplit = { "<c-v>" }, -- open buffer in new vsplit
+    open_tab = { "<c-t>" }, -- open buffer in new tab
+    jump_close = {"o"}, -- jump to the diagnostic and close the list
+    toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
+    toggle_preview = "P", -- toggle auto_preview=
+    hover = "K", -- opens a small popup with the full multiline message
+    preview = "p", -- preview the diagnostic location
+    close_folds = {"zM", "zm"}, -- close all folds
+    open_folds = {"zR", "zr"}, -- open all folds
+    toggle_fold = {"zA", "za"}, -- toggle fold of current file
+    previous = "k", -- preview item
+    next = "j" -- next item
+},
+    indent_lines = true, -- add an indent guide below the fold icons
+    auto_open = false, -- automatically open the list when you have diagnostics
+    auto_close = false, -- automatically close the list when you have no diagnostics
+    auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
+    auto_fold = false, -- automatically fold a file trouble list at creation
+    auto_jump = {"lsp_definitions"}, -- for the given modes, automatically jump if there is only a single result
+    signs = {
+    -- icons / text used for a diagnostic
+    error = "",
+    warning = "",
+    hint = "",
+    information = "",
+    other = "﫠"
+},
+    use_diagnostic_signs = false -- enabling this will use the signs defined in your lsp client
+}
+  }
+-- python-mode config
+g.pymode_python = 'python3'
+g.pymode_syntax = 1
+
+--iron config
+local iron = require("iron")
+local view = require("iron.view")
+local common = require("iron.fts.common")
+
+-- Pick a Python REPL command:
+--   1. IPython from the project's venv, if available
+--   2. plain python from the project's venv, if a venv exists
+--   3. system python3 otherwise
+local function python_repl_cmd()
+  local root = vim.fs.root(0, { ".venv", "venv", "pyproject.toml", "setup.py", ".git" })
+    or vim.uv.cwd()
+
+  local venvs = {}
+  if vim.env.VIRTUAL_ENV then table.insert(venvs, vim.env.VIRTUAL_ENV) end
+  table.insert(venvs, root .. "/.venv")
+  table.insert(venvs, root .. "/venv")
+
+  for _, dir in ipairs(venvs) do
+    local ipython = dir .. "/bin/ipython"
+    local py = dir .. "/bin/python"
+    if vim.fn.executable(ipython) == 1 then
+      return { ipython, "--no-autoindent" }
+    elseif vim.fn.executable(py) == 1 then
+      return { py }
+    end
+  end
+
+  return { "python3" }
+end
+
+iron.core.setup {
+  config = {
+    -- Whether a repl should be discarded or not
+    scratch_repl = true,
+    -- Your repl definitions come here
+    repl_definition = {
+      sh = {
+        -- Can be a table or a function that
+        -- returns a table (see below)
+        command = {"zsh"}
+      },
+      python = {
+        -- function is re-evaluated every time a repl is opened,
+        -- so switching projects / activating a venv just works
+        command = python_repl_cmd,
+        format = common.bracketed_paste_python,
+        block_dividers = { "# %%", "#%%" },
+      }
+    },
+    -- set the file type of the newly created repl to ft
+    -- bufnr is the buffer id of the REPL and ft is the filetype of the
+    -- language being used for the REPL.
+    repl_filetype = function(bufnr, ft)
+      return ft
+      -- or return a string name such as the following
+      -- return "iron"
+    end,
+    -- How the repl window will be displayed
+    -- See below for more information
+    repl_open_cmd = view.bottom(40),
+
+    -- repl_open_cmd can also be an array-style table so that multiple
+    -- repl_open_commands can be given.
+    -- When repl_open_cmd is given as a table, the first command given will
+    -- be the command that `IronRepl` initially toggles.
+    -- Moreover, when repl_open_cmd is a table, each key will automatically
+    -- be available as a keymap (see `keymaps` below) with the names
+    -- toggle_repl_with_cmd_1, ..., toggle_repl_with_cmd_k
+    -- For example,
+    --
+    -- repl_open_cmd = {
+    --   view.split.vertical.rightbelow("%40"), -- cmd_1: open a repl to the right
+    --   view.split.rightbelow("%25")  -- cmd_2: open a repl below
+    -- }
+
+  },
+  -- Iron doesn't set keymaps by default anymore.
+  -- You can set them here or manually add keymaps to the functions in iron.core
+  keymaps = {
+    toggle_repl = "<space>rr", -- toggles the repl open and closed.
+    -- If repl_open_command is a table as above, then the following keymaps are
+    -- available
+    -- toggle_repl_with_cmd_1 = "<space>rv",
+    -- toggle_repl_with_cmd_2 = "<space>rh",
+    restart_repl = "<space>rR", -- calls `IronRestart` to restart the repl
+    send_motion = "<space>sc",
+    visual_send = "<C-s>",
+    send_file = "<space>sf",
+    send_line = "<C-s>",
+    send_paragraph = "<space>sp",
+    send_until_cursor = "<space>su",
+    send_mark = "<space>sm",
+    send_code_block = "<space>sb",
+    send_code_block_and_move = "<space>sn",
+    mark_motion = "<space>mc",
+    mark_visual = "<space>mc",
+    remove_mark = "<space>md",
+    cr = "<space>s<cr>",
+    interrupt = "<space>s<space>",
+    exit = "<space>sq",
+    clear = "<space>cl",
+  },
+  -- If the highlight is on, you can change how it looks
+  -- For the available options, check nvim_set_hl
+  highlight = {
+    italic = true
+  },
+  ignore_blank_lines = true, -- ignore blank lines when sending visual select lines
+}
+
+--python-mode condfig
+g.pymode_lint_checkers = {'pyflakes', 'pycodestyle'}
+
+-- iron also has a list of commands, see :h iron-commands for all available commands
+vim.keymap.set('n', '<space>rf', '<cmd>IronFocus<cr>')
+vim.keymap.set('n', '<space>rh', '<cmd>IronHide<cr>')
+vim.keymap.set('n', '<C-x>', '<cmd>IronReplHere<cr>')
+
+--jupytext config
+local jupytext = require("jupytext")
+jupytext.setup{
+      jupytext = 'jupytext',
+      format = "markdown",
+      update = true,
+      filetype = require("jupytext").get_filetype,
+      new_template = require("jupytext").default_new_template(),
+      sync_patterns = { '*.md', '*.py', '*.jl', '*.R', '*.Rmd', '*.qmd' },
+      autosync = true,
+      handle_url_schemes = true,
+}
+
+
+
+--lsp colors
+local lsp_color = "#a6a2a2"
+require("lsp-colors").setup({
+  Error = lsp_color,
+  Warning = lsp_color,
+  Information = lsp_color,
+  Hint = lsp_color
+})
+vim.cmd[[highlight DiagnosticHint ctermfg=5 guifg=#a6a2a2]]
+vim.cmd[[highlight DiagnosticError ctermfg=5 guifg=#9b0000]]
+vim.cmd[[highlight DiagnosticWarn ctermfg=5 guifg=#a6a2a2]]
+vim.cmd[[highlight DiagnosticInfo ctermfg=5 guifg=#a6a2a2]]
+
 
 --lsp colors
 local lsp_color = "#a6a2a2"
@@ -865,3 +882,4 @@ vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' 
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
 
 vim.opt.swapfile = false
+
